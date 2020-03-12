@@ -6,16 +6,21 @@ public class CameraMovement : MonoBehaviour
 {
 
     [SerializeField]
-    private Transform player;
-    // Start is called before the first frame update
-    void Start()
+    private Transform target;
+
+    [SerializeField]
+    private float speed;
+
+    private Quaternion rotation;
+    private void Update()
     {
-        
+        rotation.y += Input.GetAxis("Mouse X");
+
+        transform.rotation = Quaternion.Euler(transform.rotation.x, rotation.y, transform.rotation.z);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
-        
+        transform.position = Vector3.Lerp(transform.position, new Vector3(target.position.x, transform.position.y, target.position.z), speed*Time.deltaTime);
     }
 }
