@@ -67,8 +67,7 @@ public class PlayerMovement : MonoBehaviour
                 isGrounded = false;
                 coll.material = airMaterial;
                 moveSpeed = airSpeed;
-            }
-                
+            }                
         }
 
     }
@@ -99,7 +98,7 @@ public class PlayerMovement : MonoBehaviour
             rb.AddForce(Vector3.down * gravity);
         }
 
-        if (isGrounded && jumpAxis != 0 && rb.velocity.y <= 0)
+        if (isGrounded && jumpAxis != 0 && rb.velocity.y <= 0.1f)
         {
             rb.velocity = new Vector3(rb.velocity.x, jumpAxis * jumpForce, rb.velocity.z);
             //rb.AddForce(new Vector3(rb.velocity.x, jumpAxis * jumpForce, rb.velocity.z), ForceMode.VelocityChange);
