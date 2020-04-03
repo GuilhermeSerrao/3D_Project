@@ -12,6 +12,9 @@ public class PlayerMovement : MonoBehaviour
     private float jumpForce;
 
     [SerializeField]
+    private float rotationSpeed;
+
+    [SerializeField]
     private Transform camera;
 
     [SerializeField]
@@ -35,11 +38,11 @@ public class PlayerMovement : MonoBehaviour
 
     private RaycastHit groundHit;
 
-    private Collider coll;
+    [SerializeField]private Collider coll;
 
     private void Awake()
     {
-        coll = GetComponent<Collider>();
+        //coll = GetComponent<Collider>();
         rb = GetComponent<Rigidbody>();
         distanceGround = GetComponent<Collider>().bounds.extents.y;
     }
@@ -55,7 +58,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (Physics.CapsuleCast(transform.position + Vector3.up * 0.5f, transform.position, 0.4f, transform.TransformDirection(Vector3.down), out groundHit, Mathf.Infinity))
         {
-            Debug.Log(groundHit.distance);
+            //Debug.Log(groundHit.distance);
             if (groundHit.distance <= 0.7f)
             {
                 isGrounded = true;
@@ -91,9 +94,15 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 direction = ((horizontalAxis * camR) + (verticalAxis * camf)).normalized;
 
+
+        if (direction != Vector3.zero)
+        {
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(direction), rotationSpeed);
+        }
+
         rb.MovePosition(transform.position + direction * (moveSpeed * Time.deltaTime));
 
-        if (!isGrounded)
+        /*if (!isGrounded)
         {
             rb.AddForce(Vector3.down * gravity);
         }
@@ -102,6 +111,6 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.velocity = new Vector3(rb.velocity.x, jumpAxis * jumpForce, rb.velocity.z);
             //rb.AddForce(new Vector3(rb.velocity.x, jumpAxis * jumpForce, rb.velocity.z), ForceMode.VelocityChange);
-        }
+        }*/
     }
 }
