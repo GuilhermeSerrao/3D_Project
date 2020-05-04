@@ -13,9 +13,21 @@ public class CameraMovement : MonoBehaviour
 
     private Quaternion rotation;
 
-    bool changeFloor = false;
+    private bool changeFloor = false;
+
+    private float targetHeight;
     private void Update()
     {
+        if (changeFloor)
+        {
+            transform.position = Vector3.Lerp(transform.position, new Vector3(target.position.x, targetHeight, target.position.z), 5 * Time.deltaTime);
+        }
+        else if (transform.position.y == targetHeight)
+        {
+            changeFloor = false;
+        }
+        
+
         rotation.y += Input.GetAxis("Mouse X");
 
         transform.rotation = Quaternion.Euler(transform.rotation.x, rotation.y, transform.rotation.z);
@@ -26,11 +38,10 @@ public class CameraMovement : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, new Vector3(target.position.x, transform.position.y, target.position.z), speed*Time.deltaTime);
     }
 
-    public void ChangeFloorPivot()
+    public void ChangeFloorPivot(float height)
     {
-
-
-        //transform.position = Vector3.Lerp(transform.position, new Vector3(target.position.x, targetHeight, target.position.z), 5 * Time.deltaTime);
+        changeFloor = true;
+        targetHeight = height;
 
     }
 }

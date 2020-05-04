@@ -23,10 +23,8 @@ public class ChangeFloorCamera : MonoBehaviour
         
         if (other.GetComponent<PlayerMovement>())
         {
-            print("Player");
-
-           
-            cameraPivot.transform.position = new Vector3(player.transform.position.x, cameraHeight, player.position.z);
+            FindObjectOfType<CameraMovement>().ChangeFloorPivot(cameraHeight);           
+            //cameraPivot.transform.position = new Vector3(player.transform.position.x, cameraHeight, player.position.z);
 
             floorToEnable.SetActive(true);
             floorToDisable.SetActive(false);
