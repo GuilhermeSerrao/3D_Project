@@ -3,7 +3,12 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - PickUpTrash
+  - LiquidToMop
+  - TrashSpawn
+  - LiquidSpawn
+  - Tool
   layers:
   - Default
   - TransparentFX
@@ -19,9 +24,9 @@ TagManager:
   - Props
   - OnlyWalls
   - FloorTrigger
-  - 
-  - 
-  - 
+  - InteractableObjects
+  - Tools
+  - ObjectPickUp
   - 
   - 
   - 
