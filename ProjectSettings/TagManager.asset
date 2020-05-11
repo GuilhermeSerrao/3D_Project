@@ -10,6 +10,8 @@ TagManager:
   - LiquidSpawn
   - InteractableObject
   - HidingSpot
+  - TrashCan
+  - Tool
   layers:
   - Default
   - TransparentFX
@@ -19,8 +21,8 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
+  - Ground
+  - PlayerHidden
   - Walls
   - Props
   - OnlyWalls
@@ -29,7 +31,7 @@ TagManager:
   - CleanWithBroom
   - InteractableObject
   - PickedObject
-  - 
+  - TrashCans
   - 
   - 
   - 

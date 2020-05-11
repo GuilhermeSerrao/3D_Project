@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public class ItemInteraction : MonoBehaviour
@@ -13,6 +14,9 @@ public class ItemInteraction : MonoBehaviour
 
     [SerializeField]
     private LayerMask layerMask;
+
+    [SerializeField]
+    private LayerMask trashCansMask;
 
     private Collider[] hitColliders;
 
@@ -38,13 +42,13 @@ public class ItemInteraction : MonoBehaviour
 
     private PlayerMovement player;
 
-    private CameraMovement camera;
+    private CameraMovement cam;
 
     void Start()
     {
         hitColliders = Physics.OverlapSphere(transform.position, grabRange, layerMask);
         player = FindObjectOfType<PlayerMovement>();
-        camera = FindObjectOfType<CameraMovement>();
+        cam = FindObjectOfType<CameraMovement>();
     }
 
     
@@ -72,17 +76,40 @@ public class ItemInteraction : MonoBehaviour
                 closestObject = null;
             }
 
-            foreach (var item in hitColliders)
+            var trashCans = GameObject.FindGameObjectsWithTag("TrashCan");
+
+            if (!leftHandFree || !rightHandFree)
             {
-                if (!item.CompareTag("HidingSpot"))
+               
+                foreach (var item in trashCans)
                 {
-                    if (Vector3.Distance(item.transform.position, transform.position) < Vector3.Distance(closestObject.position, transform.position))
-                    {
-                        closestObject = item.transform;
-                    }
+                    item.gameObject.GetComponent<ParticleSystem>().Play();
                 }
-                
             }
+            else
+            {
+                
+                foreach (var item in trashCans)
+                {
+                    item.gameObject.GetComponent<ParticleSystem>().Stop();
+                }
+            }
+
+            if (leftHandFree || rightHandFree)
+            {
+                foreach (var item in hitColliders)
+                {
+                    if (!item.CompareTag("HidingSpot"))
+                    {
+                        if (Vector3.Distance(item.transform.position, transform.position) < Vector3.Distance(closestObject.position, transform.position))
+                        {
+                            closestObject = item.transform;
+                        }
+                    }
+
+                }
+            }
+            
 
             if (Input.GetKeyDown(KeyCode.F))
             {
@@ -91,9 +118,10 @@ public class ItemInteraction : MonoBehaviour
                     if (item.CompareTag("HidingSpot") && item.transform.GetChild(0).gameObject.activeInHierarchy)
                     {
                         item.transform.GetChild(0).gameObject.SetActive(false);
+                        player.transform.parent = item.transform;
                         hidden = true;
                         player.Hide(hidden);
-                        camera.ChangeCameraTarget(item.transform);
+                        cam.ChangeCameraTarget(item.transform);
                         ReleaseItems(2);
                     }
                 }
@@ -185,11 +213,13 @@ public class ItemInteraction : MonoBehaviour
         }
         else if(hidden)
         {
+            player.transform.position = player.transform.parent.transform.position;
             if (Input.GetKeyDown(KeyCode.F))
             {
+                player.transform.parent = null;
                 hidden = false;
                 player.Hide(hidden);
-                camera.ChangeCameraTarget(player.transform);
+                cam.ChangeCameraTarget(player.transform);
             }
         }
 
@@ -198,9 +228,19 @@ public class ItemInteraction : MonoBehaviour
 
     private void ReleaseItems(int id)
     {
+        var trashCans = Physics.OverlapSphere(transform.position, grabRange, trashCansMask);
+        
         if (id == 0 || id == 2)
-        {
-            if (rightObject)
+        {           
+
+            if (trashCans.Length != 0 && !rightObject.CompareTag("Tool"))
+            {                
+                rightHandFree = true;
+                var tempTrash = rightObject;
+                rightObject = null;
+                Destroy(tempTrash.gameObject);
+            }
+            else
             {
                 if (rightObject.transform.parent.name == "Pivot")
                 {
@@ -218,12 +258,24 @@ public class ItemInteraction : MonoBehaviour
 
                 rightHandFree = true;
                 rightObject = null;
-            }
+            }            
+                
+           
+
+            
         }
 
         if (id == 1 || id == 2)
         {
-            if (leftObject)
+            
+            if (trashCans.Length != 0 && !leftObject.CompareTag("Tool"))
+            {
+                leftHandFree = true;
+                var tempTrash = leftObject;
+                leftObject = null;
+                Destroy(tempTrash.gameObject);
+            }
+            else
             {
                 if (leftObject.transform.parent.name == "Pivot")
                 {
@@ -242,9 +294,7 @@ public class ItemInteraction : MonoBehaviour
                 leftHandFree = true;
                 leftObject = null;
             }
-        }     
-
-        
+        }             
     }
 
     private void OnDrawGizmos()

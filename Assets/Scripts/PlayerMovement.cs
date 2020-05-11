@@ -15,7 +15,7 @@ public class PlayerMovement : MonoBehaviour
     private float rotationSpeed;
 
     [SerializeField]
-    private Transform camera;
+    private Transform cam;
 
     [SerializeField]
     private float gravity;
@@ -89,8 +89,8 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-            Vector3 camf = camera.forward;
-            Vector3 camR = camera.right;
+            Vector3 camf = cam.forward;
+            Vector3 camR = cam.right;
 
             camf.y = 0;
             camR.y = 0;
@@ -130,10 +130,13 @@ public class PlayerMovement : MonoBehaviour
         if (hide)
         {
             transform.GetChild(0).gameObject.SetActive(false);
+            //transform.localScale = Vector3.zero;
         }
         else
         {
             transform.GetChild(0).gameObject.SetActive(true);
+
+            //transform.localScale = Vector3.one;
         }
     }
 }
