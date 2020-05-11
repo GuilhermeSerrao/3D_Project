@@ -44,4 +44,9 @@ public class CameraMovement : MonoBehaviour
         targetHeight = height;
 
     }
+
+    public void ChangeCameraTarget(Transform newTarget)
+    {
+        target = newTarget;
+    }
 }

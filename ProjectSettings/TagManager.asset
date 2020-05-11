@@ -8,7 +8,8 @@ TagManager:
   - LiquidToMop
   - TrashSpawn
   - LiquidSpawn
-  - Tool
+  - InteractableObject
+  - HidingSpot
   layers:
   - Default
   - TransparentFX
@@ -24,10 +25,10 @@ TagManager:
   - Props
   - OnlyWalls
   - FloorTrigger
-  - InteractableObjects
-  - Tools
-  - ObjectPickUp
-  - 
+  - CleanWithMop
+  - CleanWithBroom
+  - InteractableObject
+  - PickedObject
   - 
   - 
   - 

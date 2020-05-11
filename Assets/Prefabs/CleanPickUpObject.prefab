@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7002360520536356951}
   - component: {fileID: 4027830635430476414}
   - component: {fileID: 7234140480865648997}
-  m_Layer: 11
+  m_Layer: 16
   m_Name: CleanPickUpObject
   m_TagString: PickUpTrash
   m_Icon: {fileID: 0}

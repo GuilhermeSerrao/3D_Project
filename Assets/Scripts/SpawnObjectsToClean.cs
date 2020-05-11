@@ -20,27 +20,22 @@ public class SpawnObjectsToClean : MonoBehaviour
     {
         liquidSpawnLocations = GameObject.FindGameObjectsWithTag("LiquidSpawn").ToList();
         trashSpawnLocations = GameObject.FindGameObjectsWithTag("TrashSpawn").ToList();
-    }
-    void Start()
-    {
+
         for (liquidsSpawned = 0; liquidsSpawned < maxLiquidsSpawned; liquidsSpawned++)
         {
             var location = Random.Range(0, liquidSpawnLocations.Count);
-            Instantiate(liquidsToSpawn[Random.Range(0, liquidsToSpawn.Length)], liquidSpawnLocations[location].transform);
+            var newTrash = Instantiate(liquidsToSpawn[Random.Range(0, liquidsToSpawn.Length)], liquidSpawnLocations[location].transform);
+            newTrash.transform.parent = null;
             liquidSpawnLocations.Remove(liquidSpawnLocations[location]);
         }
 
         for (trashSpawned = 0; trashSpawned < maxTrashSpawned; trashSpawned++)
         {
             var location = Random.Range(0, trashSpawnLocations.Count);
-            Instantiate(trashToSpawn[Random.Range(0, trashToSpawn.Length)], trashSpawnLocations[location].transform);
+            var newTrash = Instantiate(trashToSpawn[Random.Range(0, trashToSpawn.Length)], trashSpawnLocations[location].transform);
+            newTrash.transform.parent = null;
             trashSpawnLocations.Remove(trashSpawnLocations[location]);
         }
-
     }
 
-    void Update()
-    {
-        
-    }
 }

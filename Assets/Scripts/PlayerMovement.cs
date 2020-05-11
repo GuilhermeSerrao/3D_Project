@@ -38,6 +38,8 @@ public class PlayerMovement : MonoBehaviour
 
     private RaycastHit groundHit;
 
+    private bool hidden;
+
     [SerializeField]private Collider coll;
 
     private void Awake()
@@ -73,34 +75,42 @@ public class PlayerMovement : MonoBehaviour
             }                
         }
 
+
+
     }
 
     private void FixedUpdate()
     {
-        float verticalAxis = Input.GetAxisRaw("Vertical");
-        float horizontalAxis = Input.GetAxisRaw("Horizontal");
-        float jumpAxis = Input.GetAxisRaw("Jump");       
-
-       
-
-        Vector3 camf = camera.forward;
-        Vector3 camR = camera.right;
-
-        camf.y = 0;
-        camR.y = 0;
-
-        camf = camf.normalized;
-        camR = camR.normalized;
-
-        Vector3 direction = ((horizontalAxis * camR) + (verticalAxis * camf)).normalized;
-
-
-        if (direction != Vector3.zero)
+        if (!hidden)
         {
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(direction), rotationSpeed);
+            float verticalAxis = Input.GetAxisRaw("Vertical");
+            float horizontalAxis = Input.GetAxisRaw("Horizontal");
+            float jumpAxis = Input.GetAxisRaw("Jump");
+
+
+
+            Vector3 camf = camera.forward;
+            Vector3 camR = camera.right;
+
+            camf.y = 0;
+            camR.y = 0;
+
+            camf = camf.normalized;
+            camR = camR.normalized;
+
+            Vector3 direction = ((horizontalAxis * camR) + (verticalAxis * camf)).normalized;
+
+
+            if (direction != Vector3.zero)
+            {
+                transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(direction), rotationSpeed);
+            }
+
+
+            rb.MovePosition(transform.position + direction * (moveSpeed * Time.deltaTime));
         }
 
-        rb.MovePosition(transform.position + direction * (moveSpeed * Time.deltaTime));
+        
 
         /*if (!isGrounded)
         {
@@ -112,5 +122,18 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity = new Vector3(rb.velocity.x, jumpAxis * jumpForce, rb.velocity.z);
             //rb.AddForce(new Vector3(rb.velocity.x, jumpAxis * jumpForce, rb.velocity.z), ForceMode.VelocityChange);
         }*/
+    }
+
+    public void Hide(bool hide)
+    {
+        hidden = hide;
+        if (hide)
+        {
+            transform.GetChild(0).gameObject.SetActive(false);
+        }
+        else
+        {
+            transform.GetChild(0).gameObject.SetActive(true);
+        }
     }
 }
