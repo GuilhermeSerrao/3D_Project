@@ -226,11 +226,11 @@ public class ItemInteraction : MonoBehaviour
 
     }
 
-    private void ReleaseItems(int id)
+    public void ReleaseItems(int id)
     {
         var trashCans = Physics.OverlapSphere(transform.position, grabRange, trashCansMask);
         
-        if (id == 0 || id == 2)
+        if (id == 0 || id == 2 && rightObject != null)
         {           
 
             if (trashCans.Length != 0 && !rightObject.CompareTag("Tool"))
@@ -239,6 +239,10 @@ public class ItemInteraction : MonoBehaviour
                 var tempTrash = rightObject;
                 rightObject = null;
                 Destroy(tempTrash.gameObject);
+                var UI = FindObjectOfType<UIManager>();
+                UI.pickedTrash++;
+                UI.UpdateUI();
+
             }
             else
             {
@@ -258,14 +262,11 @@ public class ItemInteraction : MonoBehaviour
 
                 rightHandFree = true;
                 rightObject = null;
-            }            
-                
-           
-
+            }         
             
         }
 
-        if (id == 1 || id == 2)
+        if (id == 1 || id == 2 && leftObject != null)
         {
             
             if (trashCans.Length != 0 && !leftObject.CompareTag("Tool"))
@@ -274,6 +275,9 @@ public class ItemInteraction : MonoBehaviour
                 var tempTrash = leftObject;
                 leftObject = null;
                 Destroy(tempTrash.gameObject);
+                var UI = FindObjectOfType<UIManager>();
+                UI.pickedTrash++;
+                UI.UpdateUI();
             }
             else
             {

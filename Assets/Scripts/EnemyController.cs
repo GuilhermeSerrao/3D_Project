@@ -17,18 +17,32 @@ public class EnemyController : MonoBehaviour
     [SerializeField]
     private LayerMask playerLayerMask, wallsLayerMask;
 
+    [SerializeField]
+    private float detectionTimer;
+
+    private float tempTimer;
+
+    private UIManager UI;
+
     private PlayerMovement player;
 
-    private bool patrol = true;
+    public bool patrol = true;
 
     private Vector3 target;
+
+    private bool canTakeLive;
+
+    
+
+    
 
     //private Vector3 previousTarget;
 
     // Start is called before the first frame update
     void Start()
     {
-       
+        tempTimer = detectionTimer;
+        UI = FindObjectOfType<UIManager>();
         player = FindObjectOfType<PlayerMovement>();
         target = targetLocations[Random.Range(0, targetLocations.Length)].position;
         agent.SetDestination(target);
@@ -37,22 +51,57 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!canTakeLive)
+        {
+            detectionTimer -= Time.deltaTime;
+            if (detectionTimer <= 0)
+            {
+                canTakeLive = true;
+                detectionTimer = tempTimer;
+            }
+        }
+        
         
 
         RaycastHit hit;
 
-        if (Physics.Raycast(transform.position, player.transform.position - transform.position, out hit, playerLayerMask | wallsLayerMask))
+        if (patrol && canTakeLive)
         {
-            print(hit.transform.gameObject.name);
-        }
+            if (Physics.Raycast(transform.position, player.transform.position - transform.position, out hit, playerLayerMask | wallsLayerMask))
+            {
+                
+                if (hit.transform.GetComponent<PlayerMovement>())
+                {
+                    UI.ReduceLives();
+                    canTakeLive = false;
+                    target = player.transform.position;
+                    SetDestination(target);
+                }
+                else
+                {
+                    SetDestination(target);
+                }
+            }
 
-        if (transform.position.x == target.x && transform.position.z == target.z)
-        {
-          
-            NewTargetLocation();
-            
-            agent.SetDestination(target);
+            if (transform.position.x == target.x && transform.position.z == target.z)
+            {
+
+                NewTargetLocation();
+
+                SetDestination(target);
+            }
         }
+        else
+        {
+            if (transform.position.x == target.x && transform.position.z == target.z)
+            {
+
+                NewTargetLocation();
+
+                SetDestination(target);
+            }
+        }
+        
     }
 
     private void NewTargetLocation()
@@ -60,5 +109,10 @@ public class EnemyController : MonoBehaviour
         //previousTarget = target;
         target = targetLocations[Random.Range(0, targetLocations.Length)].position;
         
+    }
+
+    private void SetDestination(Vector3 pos)
+    {
+        agent.SetDestination(pos);
     }
 }

@@ -26,6 +26,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private PhysicMaterial airMaterial;
 
+    [SerializeField]
+    private int playerLayer, ghostLayer;
+
     private float originalSpeed;
 
     private float airSpeed;
@@ -39,6 +42,10 @@ public class PlayerMovement : MonoBehaviour
     private RaycastHit groundHit;
 
     private bool hidden;
+
+    private bool ghostMode;
+
+    
 
     [SerializeField]private Collider coll;
 
@@ -58,6 +65,26 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
 
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            var UI = FindObjectOfType<UIManager>();
+            if (!ghostMode)
+            {
+                ghostMode = true;
+                UI.ghostMode = ghostMode;
+                UI.UpdateUI();
+                gameObject.layer = ghostLayer;
+                transform.GetComponent<ItemInteraction>().ReleaseItems(2);
+            }
+            else if(ghostMode)
+            {
+                ghostMode = false;
+                UI.ghostMode = ghostMode;
+                UI.UpdateUI();
+                gameObject.layer = playerLayer;
+            }
+        }
+        
         if (Physics.CapsuleCast(transform.position + Vector3.up * 0.5f, transform.position, 0.4f, transform.TransformDirection(Vector3.down), out groundHit, Mathf.Infinity))
         {
             //Debug.Log(groundHit.distance);
@@ -83,6 +110,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!hidden)
         {
+            
             float verticalAxis = Input.GetAxisRaw("Vertical");
             float horizontalAxis = Input.GetAxisRaw("Horizontal");
             float jumpAxis = Input.GetAxisRaw("Jump");
@@ -129,12 +157,16 @@ public class PlayerMovement : MonoBehaviour
         hidden = hide;
         if (hide)
         {
+            FindObjectOfType<EnemyController>().patrol = false;
             transform.GetChild(0).gameObject.SetActive(false);
+            
             //transform.localScale = Vector3.zero;
         }
         else
         {
+            FindObjectOfType<EnemyController>().patrol = true;
             transform.GetChild(0).gameObject.SetActive(true);
+            
 
             //transform.localScale = Vector3.one;
         }

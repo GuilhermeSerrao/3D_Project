@@ -114,7 +114,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2120955328210578399}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.41, y: -1.44, z: -5.75}
+  m_LocalPosition: {x: -16.6, y: -1.44, z: -9.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2120955328818397693}
@@ -297,8 +297,7 @@ MonoBehaviour:
   - {fileID: 237695985532379751, guid: fbaa0c371215b3542b6dd7afe9238afe, type: 3}
   - {fileID: 4723791278700066110, guid: c28224a14056b1c49a3e65c7def0236a, type: 3}
   trashToSpawn:
-  - {fileID: 7847389241963491082, guid: 65d9a81132daeaa44ae0a1ccce36678a, type: 3}
-  - {fileID: 6222984177263903929, guid: 20c0578981aa2e642a18082140213d1f, type: 3}
+  - {fileID: 1937664674680648034, guid: 0100b6bba163a724cab58f246e225c08, type: 3}
   maxLiquidsSpawned: 3
   maxTrashSpawned: 3
 --- !u!1 &2120955329110759423
