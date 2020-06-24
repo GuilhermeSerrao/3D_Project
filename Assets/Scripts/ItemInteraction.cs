@@ -129,7 +129,7 @@ public class ItemInteraction : MonoBehaviour
 
             //------------------------------Right Hand detection
 
-            if (closestObject && Input.GetMouseButtonDown(0) && rightHandFree)
+            if (closestObject && Input.GetMouseButtonDown(1) && rightHandFree)
             {
 
                 rightHandFree = false;
@@ -157,21 +157,21 @@ public class ItemInteraction : MonoBehaviour
                 }
             }
 
-            if (Input.GetMouseButtonUp(0))
+            if (Input.GetMouseButtonUp(1))
             {
                 rightClick = false;
             }
 
-            if (!rightHandFree && Input.GetMouseButtonDown(0) && !rightClick)
+            if (!rightHandFree && Input.GetMouseButtonDown(1) && !rightClick)
             {
 
-                ReleaseItems(0);
+                ReleaseItems(1);
             }
 
             //-----------------------------------------------------------------------
             //------------------------------------Left Hand Detection
 
-            if (closestObject && Input.GetMouseButtonDown(1) && leftHandFree)
+            if (closestObject && Input.GetMouseButtonDown(0) && leftHandFree)
             {
                 leftHandFree = false;
                 leftClick = true;
@@ -199,15 +199,15 @@ public class ItemInteraction : MonoBehaviour
 
             }
 
-            if (Input.GetMouseButtonUp(1))
+            if (Input.GetMouseButtonUp(0))
             {
                 leftClick = false;
             }
 
-            if (!leftHandFree && Input.GetMouseButtonDown(1) && !leftClick)
+            if (!leftHandFree && Input.GetMouseButtonDown(0) && !leftClick)
             {
 
-                ReleaseItems(1);
+                ReleaseItems(0);
             }
             //------------------------------------------------------------------------------
         }
@@ -230,7 +230,7 @@ public class ItemInteraction : MonoBehaviour
     {
         var trashCans = Physics.OverlapSphere(transform.position, grabRange, trashCansMask);
         
-        if (id == 0 || id == 2 && rightObject != null)
+        if (id == 1 || id == 2 && rightObject != null)
         {           
 
             if (trashCans.Length != 0 && !rightObject.CompareTag("Tool"))
@@ -266,7 +266,7 @@ public class ItemInteraction : MonoBehaviour
             
         }
 
-        if (id == 1 || id == 2 && leftObject != null)
+        if (id == 0 || id == 2 && leftObject != null)
         {
             
             if (trashCans.Length != 0 && !leftObject.CompareTag("Tool"))
