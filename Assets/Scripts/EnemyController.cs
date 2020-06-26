@@ -6,6 +6,9 @@ using UnityEngine.AI;
 public class EnemyController : MonoBehaviour
 {
     [SerializeField]
+    private FieldOfView fieldOfView;
+
+    [SerializeField]
     private Transform[] targetLocations;
 
     [SerializeField]
@@ -51,6 +54,8 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        fieldOfView.SetAimDirection(-transform.right);
+        fieldOfView.SetOrigin(transform.position);
         if (!canTakeLive)
         {
             detectionTimer -= Time.deltaTime;
@@ -59,8 +64,7 @@ public class EnemyController : MonoBehaviour
                 canTakeLive = true;
                 detectionTimer = tempTimer;
             }
-        }
-        
+        }       
         
 
         RaycastHit hit;

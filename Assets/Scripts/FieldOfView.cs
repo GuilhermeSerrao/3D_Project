@@ -34,19 +34,24 @@ public class FieldOfView : MonoBehaviour
 
     void Start()
     {
-        origin = transform.position;
+        
         startAngle = angle;
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
-
-
     }
 
     // Update is called once per frame
-    void Update()
+
+    private void Update()
     {
+        
+    }
+    void LateUpdate()
+    {
+        
+        
         angleIncrease = fov / rayCount;
-        Vector3[] vertices = new Vector3[rayCount + 2];
+        Vector3[] vertices = new Vector3[rayCount + 1 + 1];
         Vector2[] uv = new Vector2[vertices.Length];
         int[] triangles = new int[rayCount * 3];
 
@@ -56,7 +61,7 @@ public class FieldOfView : MonoBehaviour
         int triangleIndex = 0;
         angle = startAngle;
 
-        for (int i = 0; i < rayCount; i++)
+        for (int i = 0; i <= rayCount; i++)
         {
             Vector3 vertex;
 
@@ -64,16 +69,14 @@ public class FieldOfView : MonoBehaviour
 
             var raycastHit = Physics.Raycast(origin, GetVectorFromAngle(angle), out hit, viewDistance, layerMask);
 
-            //RaycastHit2D raycastHit2D = Physics2D.Raycast(origin, GetVectorFromAngle(angle), viewDistance);
+            Debug.DrawRay(origin, GetVectorFromAngle(angle), Color.red);
 
             if (hit.collider == null)
-            {
-                print("null");
+            {                
                 vertex = origin + GetVectorFromAngle(angle) * viewDistance;
             }
             else
-            {
-                print(hit.point);
+            {               
                 vertex = hit.point;
             }
 
@@ -93,7 +96,6 @@ public class FieldOfView : MonoBehaviour
             angle -= angleIncrease;
         }
 
-
         mesh.vertices = vertices;
         mesh.uv = uv;
         mesh.triangles = triangles;
@@ -102,6 +104,29 @@ public class FieldOfView : MonoBehaviour
     public static Vector3 GetVectorFromAngle(float angle)
     {
         float angleRad = angle * (Mathf.PI / 180f);
-        return new Vector3(Mathf.Cos(angleRad), Mathf.Sin(angleRad));
+        return new Vector3(Mathf.Cos(angleRad), 0, Mathf.Sin(angleRad));
+    }
+
+    public static float GetAngleFromVector(Vector3 dir)
+    {
+        dir = dir.normalized;
+        float n = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg;
+
+        if (n < 0)
+        {
+            n += 360;
+        }
+
+        return n;
+    }
+
+    public void SetOrigin(Vector3 origin)
+    {
+        this.origin = origin;
+    }
+
+    public void SetAimDirection(Vector3 aimDirection)
+    {
+        startAngle = GetAngleFromVector(aimDirection) - fov / 2f;
     }
 }
