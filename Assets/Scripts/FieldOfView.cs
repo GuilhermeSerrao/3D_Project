@@ -9,6 +9,9 @@ public class FieldOfView : MonoBehaviour
     // Start is called before the first frame update
 
     [SerializeField]
+    private LayerMask layerMask;
+
+    [SerializeField]
     private float fov = 90;
 
     [SerializeField]
@@ -23,16 +26,26 @@ public class FieldOfView : MonoBehaviour
     [SerializeField]
     private float viewDistance = 50;
 
+    private Mesh mesh;
 
+    private float angleIncrease;
+
+    private float startAngle;
 
     void Start()
     {
-        float angleIncrease = fov / rayCount;
-        
-
-        Mesh mesh = new Mesh();
+        origin = transform.position;
+        startAngle = angle;
+        mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
 
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        angleIncrease = fov / rayCount;
         Vector3[] vertices = new Vector3[rayCount + 2];
         Vector2[] uv = new Vector2[vertices.Length];
         int[] triangles = new int[rayCount * 3];
@@ -41,22 +54,27 @@ public class FieldOfView : MonoBehaviour
 
         int vertexIndex = 1;
         int triangleIndex = 0;
+        angle = startAngle;
 
         for (int i = 0; i < rayCount; i++)
         {
             Vector3 vertex;
 
-            RaycastHit2D raycastHit2D = Physics2D.Raycast(origin, GetVectorFromAngle(angle), viewDistance);
+            RaycastHit hit;
 
-            if (raycastHit2D.collider == null)
+            var raycastHit = Physics.Raycast(origin, GetVectorFromAngle(angle), out hit, viewDistance, layerMask);
+
+            //RaycastHit2D raycastHit2D = Physics2D.Raycast(origin, GetVectorFromAngle(angle), viewDistance);
+
+            if (hit.collider == null)
             {
                 print("null");
-                vertex = origin + GetVectorFromAngle(angle) * viewDistance;                
+                vertex = origin + GetVectorFromAngle(angle) * viewDistance;
             }
             else
             {
-                print(raycastHit2D.collider.gameObject);
-                vertex = raycastHit2D.point;
+                print(hit.point);
+                vertex = hit.point;
             }
 
             vertices[vertexIndex] = vertex;
@@ -74,17 +92,11 @@ public class FieldOfView : MonoBehaviour
             vertexIndex++;
             angle -= angleIncrease;
         }
-        
+
 
         mesh.vertices = vertices;
         mesh.uv = uv;
         mesh.triangles = triangles;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public static Vector3 GetVectorFromAngle(float angle)
