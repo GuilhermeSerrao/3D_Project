@@ -71,7 +71,7 @@ public class EnemyController : MonoBehaviour
 
         if (patrol && canTakeLive)
         {
-            if (Physics.Raycast(transform.position, player.transform.position - transform.position, out hit, playerLayerMask | wallsLayerMask))
+            /*if (Physics.Raycast(transform.position, player.transform.position - transform.position, out hit, playerLayerMask | wallsLayerMask))
             {
                 
                 if (hit.transform.GetComponent<PlayerMovement>())
@@ -85,7 +85,7 @@ public class EnemyController : MonoBehaviour
                 {
                     SetDestination(target);
                 }
-            }
+            }*/
 
             if (transform.position.x == target.x && transform.position.z == target.z)
             {

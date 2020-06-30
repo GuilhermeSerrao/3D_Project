@@ -48,7 +48,7 @@ public class FieldOfView : MonoBehaviour
     }
     void LateUpdate()
     {
-        
+
         
         angleIncrease = fov / rayCount;
         Vector3[] vertices = new Vector3[rayCount + 1 + 1];
@@ -68,8 +68,6 @@ public class FieldOfView : MonoBehaviour
             RaycastHit hit;
 
             var raycastHit = Physics.Raycast(origin, GetVectorFromAngle(angle), out hit, viewDistance, layerMask);
-
-            Debug.DrawRay(origin, GetVectorFromAngle(angle), Color.red);
 
             if (hit.collider == null)
             {                
@@ -122,7 +120,8 @@ public class FieldOfView : MonoBehaviour
 
     public void SetOrigin(Vector3 origin)
     {
-        this.origin = origin;
+        
+        this.origin = new Vector3(origin.x, 0.5f, origin.z);
     }
 
     public void SetAimDirection(Vector3 aimDirection)
