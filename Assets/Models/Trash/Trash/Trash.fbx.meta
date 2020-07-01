@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d8df419ddb1aa9543ac15ac842e8ef8f
+guid: 1777f802f4fc6ff4da3ec837abe95e81
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable: []
@@ -7,8 +7,8 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: lambert1
-    second: {fileID: 2100000, guid: 05ece81fb8836404ca4568ff602c9ec9, type: 2}
+      name: TrashBin
+    second: {fileID: 2100000, guid: ebbd8acb94bf43c43a1f177402d29ff4, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0

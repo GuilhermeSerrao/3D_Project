@@ -1,14 +1,24 @@
 fileFormatVersion: 2
-guid: d8df419ddb1aa9543ac15ac842e8ef8f
+guid: 666e73ed2691db7488b2fcdac4509d23
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable: []
   externalObjects:
   - first:
+      type: UnityEngine:Cubemap
+      assembly: UnityEngine.CoreModule
+      name: diffuse_cube
+    second: {fileID: 8900000, guid: 8680ea4e818928c49bdc134843dcb2d2, type: 3}
+  - first:
+      type: UnityEngine:Cubemap
+      assembly: UnityEngine.CoreModule
+      name: specular_cube
+    second: {fileID: 8900000, guid: cffa428f74011194da374682a7e7e973, type: 3}
+  - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: lambert1
-    second: {fileID: 2100000, guid: 05ece81fb8836404ca4568ff602c9ec9, type: 2}
+      name: TrashBinMetallic
+    second: {fileID: 2100000, guid: d669f2982fae67f408ce21caab144e9e, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -9,7 +10,7 @@ public class FieldOfView : MonoBehaviour
     // Start is called before the first frame update
 
     [SerializeField]
-    private LayerMask layerMask;
+    private LayerMask layerMaskWalls, layerMaskPlayer;
 
     [SerializeField]
     private float fov = 90;
@@ -26,30 +27,30 @@ public class FieldOfView : MonoBehaviour
     [SerializeField]
     private float viewDistance = 50;
 
+    [SerializeField]
+    private Material detectMaterial, alertMaterial;
+
     private Mesh mesh;
 
     private float angleIncrease;
 
     private float startAngle;
 
+    private bool[] hasPlayerArray;
+
     void Start()
     {
-        
+        hasPlayerArray = new bool[rayCount];
         startAngle = angle;
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
     }
 
-    // Update is called once per frame
 
-    private void Update()
-    {
-        
-    }
     void LateUpdate()
     {
+        angle = startAngle;
 
-        
         angleIncrease = fov / rayCount;
         Vector3[] vertices = new Vector3[rayCount + 1 + 1];
         Vector2[] uv = new Vector2[vertices.Length];
@@ -59,7 +60,7 @@ public class FieldOfView : MonoBehaviour
 
         int vertexIndex = 1;
         int triangleIndex = 0;
-        angle = startAngle;
+        
 
         for (int i = 0; i <= rayCount; i++)
         {
@@ -67,22 +68,46 @@ public class FieldOfView : MonoBehaviour
 
             RaycastHit hit;
 
-            var raycastHit = Physics.Raycast(origin, GetVectorFromAngle(angle), out hit, viewDistance, layerMask);
+            RaycastHit hitPlayer;
+
+            var raycastHit = Physics.Raycast(origin, GetVectorFromAngle(angle), out hit, viewDistance, layerMaskWalls);
+            var raycastHitPlayer = Physics.Raycast(origin, GetVectorFromAngle(angle), out hitPlayer, viewDistance, layerMaskPlayer);
 
             if (hit.collider == null)
             {                
                 vertex = origin + GetVectorFromAngle(angle) * viewDistance;
             }
             else
-            {               
+            {      
                 vertex = hit.point;
             }
 
-            vertices[vertexIndex] = vertex;
+            
+            vertices[vertexIndex] = vertex;        
+
+            
 
 
             if (i > 0)
             {
+
+                if (hitPlayer.collider != null)
+                {
+                    if (hitPlayer.collider.GetComponent<PlayerMovement>())
+                    {
+                        hasPlayerArray[i - 1] = true;
+                    }
+                    else
+                    {
+                        hasPlayerArray[i - 1] = false;
+                    }
+
+                }
+                else
+                {
+                    hasPlayerArray[i - 1] = false;
+                }
+
                 triangles[triangleIndex + 0] = 0;
                 triangles[triangleIndex + 1] = vertexIndex - 1;
                 triangles[triangleIndex + 2] = vertexIndex;
@@ -97,6 +122,26 @@ public class FieldOfView : MonoBehaviour
         mesh.vertices = vertices;
         mesh.uv = uv;
         mesh.triangles = triangles;
+
+        var hasPlayerList = hasPlayerArray.ToList();
+
+        if (hasPlayerList.Contains(true))
+        {
+            GetComponent<MeshRenderer>().material = alertMaterial;
+            FindObjectOfType<EnemyController>().SetPlayer(true);
+        }
+        else
+        {
+            GetComponent<MeshRenderer>().material = detectMaterial; ;
+            FindObjectOfType<EnemyController>().SetPlayer(false);
+        }
+
+        for (int i = 0; i < hasPlayerList.Count; i++)
+        {
+            hasPlayerList[i] = false;
+        }
+
+
     }
 
     public static Vector3 GetVectorFromAngle(float angle)
@@ -127,5 +172,10 @@ public class FieldOfView : MonoBehaviour
     public void SetAimDirection(Vector3 aimDirection)
     {
         startAngle = GetAngleFromVector(aimDirection) - fov / 2f;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        print(other.name);
     }
 }

@@ -1,14 +1,14 @@
 fileFormatVersion: 2
-guid: d8df419ddb1aa9543ac15ac842e8ef8f
+guid: 78b0270b4eee528488a6d4bf0ffff42c
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable: []
   externalObjects:
   - first:
-      type: UnityEngine:Material
+      type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
-      name: lambert1
-    second: {fileID: 2100000, guid: 05ece81fb8836404ca4568ff602c9ec9, type: 2}
+      name: Borger Color
+    second: {fileID: 2800000, guid: 33fc20a97bf0f5c4bb984c07f0b17042, type: 3}
   materials:
     materialImportMode: 1
     materialName: 0

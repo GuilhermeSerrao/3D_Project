@@ -1,14 +1,14 @@
 fileFormatVersion: 2
-guid: d8df419ddb1aa9543ac15ac842e8ef8f
+guid: fa851db3cab916b41b817a46e56039d4
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable: []
   externalObjects:
   - first:
-      type: UnityEngine:Material
+      type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
-      name: lambert1
-    second: {fileID: 2100000, guid: 05ece81fb8836404ca4568ff602c9ec9, type: 2}
+      name: Bottle Colors
+    second: {fileID: 2800000, guid: 7b29f081b6d47ab4c85d37545cbd1132, type: 3}
   materials:
     materialImportMode: 1
     materialName: 0
