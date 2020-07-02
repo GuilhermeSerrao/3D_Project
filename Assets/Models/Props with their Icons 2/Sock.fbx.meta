@@ -3,7 +3,12 @@ guid: dc785402e9eeb2743a16da84a3e7d1ac
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: SockColor
+    second: {fileID: 2800000, guid: fa90bbb77bae4de4aa607d7c0b4c7dfb, type: 3}
   materials:
     materialImportMode: 1
     materialName: 0

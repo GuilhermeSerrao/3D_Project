@@ -55,7 +55,7 @@ public class UIManager : MonoBehaviour
 
         if (roundTimer > 0 && !paused)
         {
-            print(roundTimer);
+
             roundTimer -= Time.deltaTime;
             clockBar.fillAmount = roundTimer / startTimer;
         }

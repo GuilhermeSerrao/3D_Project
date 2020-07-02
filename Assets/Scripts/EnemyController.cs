@@ -59,7 +59,6 @@ public class EnemyController : MonoBehaviour
             if (detectTimer < startDetectTimer)
             {
                 detectTimer += Time.deltaTime;
-                print(detectTimer / 1);
                 detectbar1.fillAmount = detectTimer / 1;
                 detectbar2.fillAmount = detectTimer / 1;
             }

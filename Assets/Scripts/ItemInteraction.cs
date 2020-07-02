@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ItemInteraction : MonoBehaviour
 {
 
     [SerializeField]
-    private float grabRange;   
+    private float grabRange;
+
+    [SerializeField]
+    private GameObject particles;
 
     private Transform closestObject;
 
@@ -26,25 +30,22 @@ public class ItemInteraction : MonoBehaviour
     [SerializeField]
     private Transform leftHand;
 
-    private bool rightHandFree = true;
+    [SerializeField]
+    private Image leftTrashIcon, rightTrashIcon;
 
-    private bool leftHandFree = true;
+    private PickUpItem pickedItemRight, pickedItemLeft;
 
-    private Transform rightObject;
+    private bool rightHandFree = true, leftHandFree = true, leftClick, rightClick, hidden = false;
 
-    private Transform leftObject;
-
-    private bool rightClick;
-
-    private bool leftClick;
-
-    private bool hidden = false;
+    private Transform rightObject, leftObject;
 
     private PlayerMovement player;
 
     private CameraMovement cam;
 
-    public bool canGrab;
+    public bool canGrab = true;
+
+    private GameObject[] trashDropLeft, trashDropRight;
 
     void Start()
     {
@@ -57,12 +58,11 @@ public class ItemInteraction : MonoBehaviour
     void Update()
     {
         if (!UIManager.paused && canGrab)
-        {
-
-        
+        {        
             if (!hidden)
-            {
-            
+            {              
+
+
                 hitColliders = Physics.OverlapSphere(transform.position, grabRange, layerMask);
             
 
@@ -73,6 +73,7 @@ public class ItemInteraction : MonoBehaviour
                         if (!item.CompareTag("HidingSpot"))
                         {
                             closestObject = item.transform;
+
                         }
                     }
                 
@@ -86,7 +87,7 @@ public class ItemInteraction : MonoBehaviour
 
                 if (!leftHandFree || !rightHandFree)
                 {
-               
+
                     foreach (var item in trashCans)
                     {
                         item.gameObject.GetComponent<ParticleSystem>().Play();
@@ -94,7 +95,7 @@ public class ItemInteraction : MonoBehaviour
                 }
                 else
                 {
-                
+
                     foreach (var item in trashCans)
                     {
                         item.gameObject.GetComponent<ParticleSystem>().Stop();
@@ -141,6 +142,8 @@ public class ItemInteraction : MonoBehaviour
                     rightHandFree = false;
                     rightClick = true;
                     rightObject = closestObject;
+                    pickedItemRight = rightObject.GetComponent<PickUpItem>();
+
                     if (rightObject.transform.parent != null)
                     {
                         if (rightObject.transform.parent.name == "Pivot")
@@ -155,6 +158,8 @@ public class ItemInteraction : MonoBehaviour
                     }
                     else
                     {
+                        rightTrashIcon.gameObject.SetActive(true);
+                        rightTrashIcon.sprite = rightObject.GetComponent<PickUpItem>().icon;                        
                         rightObject.gameObject.layer = 17;
                         rightObject.transform.position = rightHand.position;
                         rightObject.transform.rotation = rightHand.rotation;
@@ -182,6 +187,7 @@ public class ItemInteraction : MonoBehaviour
                     leftHandFree = false;
                     leftClick = true;
                     leftObject = closestObject;
+                    pickedItemLeft = leftObject.GetComponent<PickUpItem>();
                     if (leftObject.transform.parent != null)
                     {
                         if (leftObject.transform.parent.name == "Pivot")
@@ -196,6 +202,8 @@ public class ItemInteraction : MonoBehaviour
                     }
                     else
                     {
+                        leftTrashIcon.gameObject.SetActive(true);
+                        leftTrashIcon.sprite = leftObject.GetComponent<PickUpItem>().icon;
                         leftObject.gameObject.layer = 17;
                         leftObject.transform.position = leftHand.position;
                         leftObject.transform.rotation = leftHand.rotation;
@@ -203,6 +211,86 @@ public class ItemInteraction : MonoBehaviour
                         leftObject.gameObject.GetComponent<Rigidbody>().isKinematic = true;
                     }
 
+                }
+
+                if (pickedItemLeft != null)
+                {
+                    if ((int)pickedItemLeft.category == 1)
+                    {
+                        trashDropLeft = GameObject.FindGameObjectsWithTag("FoodTrash");
+                        foreach (var item in trashDropLeft)
+                        {
+
+                        }
+                    }
+                    else if ((int)pickedItemLeft.category == 2)
+                    {
+                        trashDropLeft = GameObject.FindGameObjectsWithTag("ClothesTrash");
+                        foreach (var item in trashDropLeft)
+                        {
+                            print("Drop Clothes");
+                        }
+                    }
+                    else if ((int)pickedItemLeft.category == 3)
+                    {
+                        trashDropLeft = GameObject.FindGameObjectsWithTag("BooksTrash");
+                        foreach (var item in trashDropLeft)
+                        {
+                            print("Drop books");
+                        }
+                    }
+                    else if ((int)pickedItemLeft.category == 4)
+                    {
+                        trashDropLeft = GameObject.FindGameObjectsWithTag("ElectronicTrash");
+                        foreach (var item in trashDropLeft)
+                        {
+                            print("Drop electronics");
+                        }
+                    }
+                }
+                else
+                {
+                    trashDropLeft = null;
+                }
+
+                if (pickedItemRight != null)
+                {
+                    if ((int)pickedItemRight.category == 1)
+                    {
+                        trashDropRight = GameObject.FindGameObjectsWithTag("FoodTrash");
+                        foreach (var item in trashDropRight)
+                        {
+                            print("Drop food");
+                        }
+                    }
+                    else if ((int)pickedItemRight.category == 2)
+                    {
+                        trashDropRight = GameObject.FindGameObjectsWithTag("ClothesTrash");
+                        foreach (var item in trashDropRight)
+                        {
+                            print("Drop Clothes");
+                        }
+                    }
+                    else if ((int)pickedItemRight.category == 3)
+                    {
+                        trashDropRight = GameObject.FindGameObjectsWithTag("BooksTrash");
+                        foreach (var item in trashDropRight)
+                        {
+                            print("Drop books");
+                        }
+                    }
+                    else if ((int)pickedItemRight.category == 4)
+                    {
+                        trashDropRight = GameObject.FindGameObjectsWithTag("ElectronicTrash");
+                        foreach (var item in trashDropRight)
+                        {
+                            print("Drop electronics");
+                        }
+                    }
+                }
+                else
+                {
+                    trashDropRight = null;
                 }
 
                 if (Input.GetMouseButtonUp(0))
@@ -242,12 +330,21 @@ public class ItemInteraction : MonoBehaviour
         {           
 
             if (trashCans.Length != 0 && !rightObject.CompareTag("Tool"))
-            {                
-                rightHandFree = true;
-                var tempTrash = rightObject;
-                rightObject = null;
-                Destroy(tempTrash.gameObject);
-                var UI = FindObjectOfType<UIManager>();
+            {
+                foreach (var item in trashCans)
+                {
+                    if ((int)item.GetComponent<TrashDrop>().category == (int)pickedItemRight.category)
+                    {
+                        rightTrashIcon.gameObject.SetActive(false);
+                        rightTrashIcon.sprite = null;
+                        rightHandFree = true;
+                        var tempTrash = rightObject;
+                        rightObject = null;
+                        Destroy(tempTrash.gameObject);
+                        var UI = FindObjectOfType<UIManager>();
+                        break;
+                    }
+                }              
                // UI.pickedTrash++;
                // UI.UpdateUI();
 
@@ -263,6 +360,8 @@ public class ItemInteraction : MonoBehaviour
                 }
                 else
                 {
+                    rightTrashIcon.gameObject.SetActive(false);
+                    rightTrashIcon.sprite = null;
                     rightObject.gameObject.layer = 16;
                     rightObject.transform.parent = null;
                     rightObject.gameObject.GetComponent<Rigidbody>().isKinematic = false;
@@ -270,7 +369,8 @@ public class ItemInteraction : MonoBehaviour
 
                 rightHandFree = true;
                 rightObject = null;
-            }         
+            }
+            pickedItemRight = null;
             
         }
 
@@ -279,11 +379,21 @@ public class ItemInteraction : MonoBehaviour
             
             if (trashCans.Length != 0 && !leftObject.CompareTag("Tool"))
             {
-                leftHandFree = true;
-                var tempTrash = leftObject;
-                leftObject = null;
-                Destroy(tempTrash.gameObject);
-                var UI = FindObjectOfType<UIManager>();
+                foreach (var item in trashCans)
+                {
+                    if ((int)item.GetComponent<TrashDrop>().category == (int)pickedItemLeft.category)
+                    {
+                        leftTrashIcon.gameObject.SetActive(false);
+                        leftTrashIcon.sprite = null;
+                        leftHandFree = true;
+                        var tempTrash = leftObject;
+                        leftObject = null;
+                        Destroy(tempTrash.gameObject);
+                        var UI = FindObjectOfType<UIManager>();
+                        break;
+                    }
+                }
+               
                // UI.pickedTrash++;
                // UI.UpdateUI();
             }
@@ -298,6 +408,8 @@ public class ItemInteraction : MonoBehaviour
                 }
                 else
                 {
+                    leftTrashIcon.gameObject.SetActive(false);
+                    leftTrashIcon.sprite = null;
                     leftObject.gameObject.layer = 16;
                     leftObject.transform.parent = null;
                     leftObject.gameObject.GetComponent<Rigidbody>().isKinematic = false;
@@ -306,6 +418,7 @@ public class ItemInteraction : MonoBehaviour
                 leftHandFree = true;
                 leftObject = null;
             }
+            pickedItemLeft = null;
         }             
     }
 

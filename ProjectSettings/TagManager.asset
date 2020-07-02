@@ -12,6 +12,14 @@ TagManager:
   - HidingSpot
   - TrashCan
   - Tool
+  - FoodSpawn
+  - ClothesSpawn
+  - BooksSpawn
+  - ElectronicSpawn
+  - FoodTrash
+  - ElectronicTrash
+  - BooksTrash
+  - ClothesTrash
   layers:
   - Default
   - TransparentFX

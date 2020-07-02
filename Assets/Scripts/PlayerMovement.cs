@@ -44,10 +44,9 @@ public class PlayerMovement : MonoBehaviour
 
     private bool hidden;
 
-    private bool ghostMode, canTurnGhost, ghostInCooldown;
+    private bool ghostMode, canTurnGhost, ghostInCooldown = false;
 
     private UIManager Ui;
-
     
 
     [SerializeField]private Collider coll;
@@ -60,7 +59,8 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void Start()
-    {
+    {      
+
         ghostCooldownStart = ghostCooldownTimer;
         ghostStartTimer = ghostTimer;
         originalSpeed = moveSpeed;
@@ -77,10 +77,12 @@ public class PlayerMovement : MonoBehaviour
             ghostCooldownTimer -= Time.deltaTime;
             canTurnGhost = false;
         }
-        else
+        else if(ghostCooldownTimer <= 0 && ghostInCooldown)
         {
+            ghostInCooldown = false;
             canTurnGhost = true;
             ghostCooldownTimer = ghostCooldownStart;
+            
         }
 
         if (ghostUse > 0 && !ghostInCooldown)
@@ -120,10 +122,8 @@ public class PlayerMovement : MonoBehaviour
             {
                 ghostMode = false;
                 disableGhost();
-            }
-            
+            }            
         }
-
     }
 
     private void FixedUpdate()
@@ -134,8 +134,6 @@ public class PlayerMovement : MonoBehaviour
             float verticalAxis = Input.GetAxisRaw("Vertical");
             float horizontalAxis = Input.GetAxisRaw("Horizontal");
             float jumpAxis = Input.GetAxisRaw("Jump");
-
-
 
             Vector3 camf = cam.forward;
             Vector3 camR = cam.right;
@@ -148,12 +146,10 @@ public class PlayerMovement : MonoBehaviour
 
             Vector3 direction = ((horizontalAxis * camR) + (verticalAxis * camf)).normalized;
 
-
             if (direction != Vector3.zero)
             {
                 transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(direction), rotationSpeed);
             }
-
 
             rb.MovePosition(transform.position + direction * (moveSpeed * Time.deltaTime));
         }
@@ -188,6 +184,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void enableGhost()
     {
+        print("ghost mode");
         ghostUse--;
         ghostMode = true;
         FindObjectOfType<ItemInteraction>().canGrab = false;
@@ -201,8 +198,12 @@ public class PlayerMovement : MonoBehaviour
                 item.layer = 12;
             }
         }
+
+
         ghostOverlay.gameObject.SetActive(true);
         transform.GetComponent<ItemInteraction>().ReleaseItems(2);
+
+        ghostInCooldown = false;
     }
 
     private void disableGhost()
@@ -220,6 +221,9 @@ public class PlayerMovement : MonoBehaviour
                 item.layer = 19;
             }
         }
+
         ghostOverlay.gameObject.SetActive(false);
+
+        ghostInCooldown = true;
     }
 }
