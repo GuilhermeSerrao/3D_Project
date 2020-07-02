@@ -44,6 +44,8 @@ public class ItemInteraction : MonoBehaviour
 
     private CameraMovement cam;
 
+    public bool canGrab;
+
     void Start()
     {
         hitColliders = Physics.OverlapSphere(transform.position, grabRange, layerMask);
@@ -54,175 +56,181 @@ public class ItemInteraction : MonoBehaviour
     
     void Update()
     {
-        if (!hidden)
+        if (!UIManager.paused && canGrab)
         {
+
+        
+            if (!hidden)
+            {
             
-            hitColliders = Physics.OverlapSphere(transform.position, grabRange, layerMask);
+                hitColliders = Physics.OverlapSphere(transform.position, grabRange, layerMask);
             
 
-            if (hitColliders.Length != 0)
-            {
-                foreach (var item in hitColliders)
+                if (hitColliders.Length != 0)
                 {
-                    if (!item.CompareTag("HidingSpot"))
+                    foreach (var item in hitColliders)
                     {
-                        closestObject = item.transform;
-                    }
-                }
-                
-            }
-            else
-            {
-                closestObject = null;
-            }
-
-            var trashCans = GameObject.FindGameObjectsWithTag("TrashCan");
-
-            if (!leftHandFree || !rightHandFree)
-            {
-               
-                foreach (var item in trashCans)
-                {
-                    item.gameObject.GetComponent<ParticleSystem>().Play();
-                }
-            }
-            else
-            {
-                
-                foreach (var item in trashCans)
-                {
-                    item.gameObject.GetComponent<ParticleSystem>().Stop();
-                }
-            }
-
-            if (leftHandFree || rightHandFree)
-            {
-                foreach (var item in hitColliders)
-                {
-                    if (!item.CompareTag("HidingSpot"))
-                    {
-                        if (Vector3.Distance(item.transform.position, transform.position) < Vector3.Distance(closestObject.position, transform.position))
+                        if (!item.CompareTag("HidingSpot"))
                         {
                             closestObject = item.transform;
                         }
                     }
-
+                
                 }
-            }
-            
-
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                foreach (var item in hitColliders)
+                else
                 {
-                    if (item.CompareTag("HidingSpot") && item.transform.GetChild(0).gameObject.activeInHierarchy)
+                    closestObject = null;
+                }
+
+                var trashCans = GameObject.FindGameObjectsWithTag("TrashCan");
+
+                if (!leftHandFree || !rightHandFree)
+                {
+               
+                    foreach (var item in trashCans)
                     {
-                        item.transform.GetChild(0).gameObject.SetActive(false);
-                        player.transform.parent = item.transform;
-                        hidden = true;
-                        player.Hide(hidden);
-                        cam.ChangeCameraTarget(item.transform);
-                        ReleaseItems(2);
+                        item.gameObject.GetComponent<ParticleSystem>().Play();
                     }
                 }
-            }
-
-            //------------------------------Right Hand detection
-
-            if (closestObject && Input.GetMouseButtonDown(1) && rightHandFree)
-            {
-
-                rightHandFree = false;
-                rightClick = true;
-                rightObject = closestObject;
-                if (rightObject.transform.parent != null)
+                else
                 {
-                    if (rightObject.transform.parent.name == "Pivot")
+                
+                    foreach (var item in trashCans)
+                    {
+                        item.gameObject.GetComponent<ParticleSystem>().Stop();
+                    }
+                }
+
+                if (leftHandFree || rightHandFree)
+                {
+                    foreach (var item in hitColliders)
+                    {
+                        if (!item.CompareTag("HidingSpot"))
+                        {
+                            if (Vector3.Distance(item.transform.position, transform.position) < Vector3.Distance(closestObject.position, transform.position))
+                            {
+                                closestObject = item.transform;
+                            }
+                        }
+
+                    }
+                }
+            
+
+                if (Input.GetKeyDown(KeyCode.F))
+                {
+                    foreach (var item in hitColliders)
+                    {
+                        if (item.CompareTag("HidingSpot") && item.transform.GetChild(0).gameObject.activeInHierarchy)
+                        {
+                            item.transform.GetChild(0).gameObject.SetActive(false);
+                            player.transform.parent = item.transform;
+                            hidden = true;
+                            player.Hide(hidden);
+                            cam.ChangeCameraTarget(item.transform);
+                            ReleaseItems(2);
+                        }
+                    }
+                }
+
+                //------------------------------Right Hand detection
+
+                if (closestObject && Input.GetMouseButtonDown(1) && rightHandFree)
+                {
+
+                    rightHandFree = false;
+                    rightClick = true;
+                    rightObject = closestObject;
+                    if (rightObject.transform.parent != null)
+                    {
+                        if (rightObject.transform.parent.name == "Pivot")
+                        {
+                            rightObject.gameObject.layer = 17;
+                            rightObject.transform.parent.transform.position = rightHand.position;
+                            rightObject.transform.parent.transform.rotation = rightHand.rotation;
+                            rightObject.transform.parent.transform.parent = rightHand;
+                            rightObject.transform.parent.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+                            rightObject.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+                        }
+                    }
+                    else
                     {
                         rightObject.gameObject.layer = 17;
-                        rightObject.transform.parent.transform.position = rightHand.position;
-                        rightObject.transform.parent.transform.rotation = rightHand.rotation;
-                        rightObject.transform.parent.transform.parent = rightHand;
-                        rightObject.transform.parent.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+                        rightObject.transform.position = rightHand.position;
+                        rightObject.transform.rotation = rightHand.rotation;
+                        rightObject.transform.parent = rightHand;
                         rightObject.gameObject.GetComponent<Rigidbody>().isKinematic = true;
                     }
                 }
-                else
+
+                if (Input.GetMouseButtonUp(1))
                 {
-                    rightObject.gameObject.layer = 17;
-                    rightObject.transform.position = rightHand.position;
-                    rightObject.transform.rotation = rightHand.rotation;
-                    rightObject.transform.parent = rightHand;
-                    rightObject.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+                    rightClick = false;
                 }
-            }
 
-            if (Input.GetMouseButtonUp(1))
-            {
-                rightClick = false;
-            }
-
-            if (!rightHandFree && Input.GetMouseButtonDown(1) && !rightClick)
-            {
-
-                ReleaseItems(1);
-            }
-
-            //-----------------------------------------------------------------------
-            //------------------------------------Left Hand Detection
-
-            if (closestObject && Input.GetMouseButtonDown(0) && leftHandFree)
-            {
-                leftHandFree = false;
-                leftClick = true;
-                leftObject = closestObject;
-                if (leftObject.transform.parent != null)
+                if (!rightHandFree && Input.GetMouseButtonDown(1) && !rightClick)
                 {
-                    if (leftObject.transform.parent.name == "Pivot")
+
+                    ReleaseItems(1);
+                }
+
+                //-----------------------------------------------------------------------
+                //------------------------------------Left Hand Detection
+
+                if (closestObject && Input.GetMouseButtonDown(0) && leftHandFree)
+                {
+                    leftHandFree = false;
+                    leftClick = true;
+                    leftObject = closestObject;
+                    if (leftObject.transform.parent != null)
+                    {
+                        if (leftObject.transform.parent.name == "Pivot")
+                        {
+                            leftObject.gameObject.layer = 17;
+                            leftObject.transform.parent.transform.position = leftHand.position;
+                            leftObject.transform.parent.transform.rotation = leftHand.rotation;
+                            leftObject.transform.parent.transform.parent = leftHand;
+                            leftObject.transform.parent.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+                            leftObject.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+                        }
+                    }
+                    else
                     {
                         leftObject.gameObject.layer = 17;
-                        leftObject.transform.parent.transform.position = leftHand.position;
-                        leftObject.transform.parent.transform.rotation = leftHand.rotation;
-                        leftObject.transform.parent.transform.parent = leftHand;
-                        leftObject.transform.parent.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+                        leftObject.transform.position = leftHand.position;
+                        leftObject.transform.rotation = leftHand.rotation;
+                        leftObject.transform.parent = leftHand;
                         leftObject.gameObject.GetComponent<Rigidbody>().isKinematic = true;
                     }
+
                 }
-                else
+
+                if (Input.GetMouseButtonUp(0))
                 {
-                    leftObject.gameObject.layer = 17;
-                    leftObject.transform.position = leftHand.position;
-                    leftObject.transform.rotation = leftHand.rotation;
-                    leftObject.transform.parent = leftHand;
-                    leftObject.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+                    leftClick = false;
                 }
 
-            }
+                if (!leftHandFree && Input.GetMouseButtonDown(0) && !leftClick)
+                {
 
-            if (Input.GetMouseButtonUp(0))
+                    ReleaseItems(0);
+                }
+                //------------------------------------------------------------------------------
+            }
+            else if(hidden)
             {
-                leftClick = false;
+                player.transform.position = player.transform.parent.transform.position;
+                if (Input.GetKeyDown(KeyCode.F))
+                {
+                    player.transform.parent = null;
+                    hidden = false;
+                    player.Hide(hidden);
+                    cam.ChangeCameraTarget(player.transform);
+                }
             }
 
-            if (!leftHandFree && Input.GetMouseButtonDown(0) && !leftClick)
-            {
 
-                ReleaseItems(0);
-            }
-            //------------------------------------------------------------------------------
         }
-        else if(hidden)
-        {
-            player.transform.position = player.transform.parent.transform.position;
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                player.transform.parent = null;
-                hidden = false;
-                player.Hide(hidden);
-                cam.ChangeCameraTarget(player.transform);
-            }
-        }
-
 
     }
 
@@ -240,8 +248,8 @@ public class ItemInteraction : MonoBehaviour
                 rightObject = null;
                 Destroy(tempTrash.gameObject);
                 var UI = FindObjectOfType<UIManager>();
-                UI.pickedTrash++;
-                UI.UpdateUI();
+               // UI.pickedTrash++;
+               // UI.UpdateUI();
 
             }
             else
@@ -276,8 +284,8 @@ public class ItemInteraction : MonoBehaviour
                 leftObject = null;
                 Destroy(tempTrash.gameObject);
                 var UI = FindObjectOfType<UIManager>();
-                UI.pickedTrash++;
-                UI.UpdateUI();
+               // UI.pickedTrash++;
+               // UI.UpdateUI();
             }
             else
             {

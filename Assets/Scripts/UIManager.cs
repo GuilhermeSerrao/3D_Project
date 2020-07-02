@@ -6,52 +6,71 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject gamePanel, pausePanel;
 
     [SerializeField]
-    private Text trashText, livesText, ghostModeText;
+    private Text trashText, livesText;
 
     [SerializeField]
-    private int lives, maxLives;
+    private Image clockBar, trashBar;
 
-    public int totalTrash, pickedTrash = 0;
+    public static bool paused;
 
-    public bool ghostMode;
+    [SerializeField]
+    private float roundTimer;
 
-
+    private float startTimer;
     // Start is called before the first frame update
     void Start()
     {
-        Cursor.visible = false;
-        lives = maxLives;
-        livesText.text = lives + " lives remaining";
-        trashText.text = pickedTrash + " out of " + totalTrash + " trash picked ".ToString();
-        ghostModeText.enabled = false;
+
+        startTimer = roundTimer;
+        Cursor.visible = false;      
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (!paused)
+            {                
+                Time.timeScale = 0;
+                paused = true;
+                gamePanel.SetActive(false);
+                pausePanel.SetActive(true);
+                Cursor.visible = true;
+            }
+            else
+            {
+                Time.timeScale = 1;
+                paused = false;
+                gamePanel.SetActive(true);
+                pausePanel.SetActive(false);
+                Cursor.visible = false;
+            }
+        }
+
+        if (roundTimer > 0 && !paused)
+        {
+            print(roundTimer);
+            roundTimer -= Time.deltaTime;
+            clockBar.fillAmount = roundTimer / startTimer;
+        }
+        else if(roundTimer <= 0)
+        {
+            print("Time over");
+        }
     }
 
-    public void UpdateUI()
+    public void SetLivesUI(int lives)
     {
-        livesText.text = lives + " lives remaining";
-        trashText.text = pickedTrash + " out of " + totalTrash + " trash picked ".ToString();
-        ghostModeText.enabled = ghostMode;
-        if (lives <= 0)
-        {
-            SceneManager.LoadScene("GameOverScreen", LoadSceneMode.Single);
-        }
-        else if (pickedTrash == totalTrash)
-        {
-            SceneManager.LoadScene("WinScreen", LoadSceneMode.Single);
-        }
+        livesText.text = lives.ToString();
     }
 
-    public void ReduceLives()
-    {
-        lives--;
-        UpdateUI();
-    }
+
+
+    
 }

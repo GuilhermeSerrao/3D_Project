@@ -18,7 +18,7 @@ public class SpawnObjectsToClean : MonoBehaviour
 
     private void Awake()
     {
-        FindObjectOfType<UIManager>().totalTrash = maxTrashSpawned;
+        //FindObjectOfType<UIManager>().totalTrash = maxTrashSpawned;
 
         liquidSpawnLocations = GameObject.FindGameObjectsWithTag("LiquidSpawn").ToList();
         trashSpawnLocations = GameObject.FindGameObjectsWithTag("TrashSpawn").ToList();

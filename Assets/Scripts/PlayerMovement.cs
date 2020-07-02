@@ -7,13 +7,10 @@ public class PlayerMovement : MonoBehaviour
 {
 
     [SerializeField]
-    private float moveSpeed;   
+    private float moveSpeed;  
 
     [SerializeField]
-    private float jumpForce;
-
-    [SerializeField]
-    private float rotationSpeed;
+    private float rotationSpeed, ghostTimer, ghostCooldownTimer;
 
     [SerializeField]
     private Transform cam;
@@ -28,12 +25,12 @@ public class PlayerMovement : MonoBehaviour
     private PhysicMaterial airMaterial;
 
     [SerializeField]
-    private int playerLayer, ghostLayer;
+    private int playerLayer, ghostLayer, lives, ghostUse;
 
     [SerializeField]
     private Image ghostOverlay;
 
-    private float originalSpeed;
+    private float originalSpeed, ghostStartTimer, ghostCooldownStart;
 
     private float airSpeed;
 
@@ -47,7 +44,9 @@ public class PlayerMovement : MonoBehaviour
 
     private bool hidden;
 
-    private bool ghostMode;
+    private bool ghostMode, canTurnGhost, ghostInCooldown;
+
+    private UIManager Ui;
 
     
 
@@ -62,73 +61,74 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
+        ghostCooldownStart = ghostCooldownTimer;
+        ghostStartTimer = ghostTimer;
         originalSpeed = moveSpeed;
         airSpeed = moveSpeed / 2;
+        Ui = FindObjectOfType<UIManager>();
+        Ui.SetLivesUI(lives);
     }
 
     private void Update()
     {
 
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (ghostCooldownTimer > 0 && ghostInCooldown)
+        {
+            ghostCooldownTimer -= Time.deltaTime;
+            canTurnGhost = false;
+        }
+        else
+        {
+            canTurnGhost = true;
+            ghostCooldownTimer = ghostCooldownStart;
+        }
+
+        if (ghostUse > 0 && !ghostInCooldown)
+        {
+            canTurnGhost = true;
+        }
+        else
+        {
+            canTurnGhost = false;
+        }
+
+        if (lives <= 0)
+        {
+            print("Dead");
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift) && !UIManager.paused)
         {
             var UI = FindObjectOfType<UIManager>();
-            if (!ghostMode)
+            if (!ghostMode && canTurnGhost)
             {
-                ghostMode = true;
-                UI.ghostMode = ghostMode;
-                UI.UpdateUI();
-                var objects = FindObjectsOfType<GameObject>();
-                foreach (var item in objects)
-                {
-                    if (item.layer == 19)
-                    {
-                        item.layer = 12;
-                    }
-                }
-                ghostOverlay.gameObject.SetActive(true);
-                transform.GetComponent<ItemInteraction>().ReleaseItems(2);
+                enableGhost();
             }
             else if(ghostMode)
             {
-                ghostMode = false;
-                UI.ghostMode = ghostMode;
-                UI.UpdateUI();
-                var objects = FindObjectsOfType<GameObject>();
-                foreach (var item in objects)
-                {
-                    if (item.layer == 12)
-                    {
-                        item.layer = 19;
-                    }
-                }
-                ghostOverlay.gameObject.SetActive(false);
+                disableGhost();
             }
         }
-        
-        if (Physics.CapsuleCast(transform.position + Vector3.up * 0.5f, transform.position, 0.4f, transform.TransformDirection(Vector3.down), out groundHit, Mathf.Infinity))
+
+        if (!UIManager.paused && ghostMode)
         {
-            //Debug.Log(groundHit.distance);
-            if (groundHit.distance <= 0.7f)
+            if (ghostTimer > 0)
             {
-                isGrounded = true;
-                coll.material = groundedMaterial;                
-                moveSpeed = originalSpeed;
+                ghostTimer -= Time.deltaTime;
             }
             else
             {
-                isGrounded = false;
-                coll.material = airMaterial;
-                moveSpeed = airSpeed;
-            }                
+                ghostMode = false;
+                disableGhost();
+            }
+            
         }
-
-
 
     }
 
     private void FixedUpdate()
     {
-        if (!hidden)
+        if (!hidden && !UIManager.paused)
         {
             
             float verticalAxis = Input.GetAxisRaw("Vertical");
@@ -158,18 +158,6 @@ public class PlayerMovement : MonoBehaviour
             rb.MovePosition(transform.position + direction * (moveSpeed * Time.deltaTime));
         }
 
-        
-
-        /*if (!isGrounded)
-        {
-            rb.AddForce(Vector3.down * gravity);
-        }
-
-        if (isGrounded && jumpAxis != 0 && rb.velocity.y <= 0.1f)
-        {
-            rb.velocity = new Vector3(rb.velocity.x, jumpAxis * jumpForce, rb.velocity.z);
-            //rb.AddForce(new Vector3(rb.velocity.x, jumpAxis * jumpForce, rb.velocity.z), ForceMode.VelocityChange);
-        }*/
     }
 
     public void Hide(bool hide)
@@ -190,5 +178,48 @@ public class PlayerMovement : MonoBehaviour
 
             //transform.localScale = Vector3.one;
         }
+    }
+
+    public void LoseHealth()
+    {
+        lives--;
+        Ui.SetLivesUI(lives);
+    }
+
+    private void enableGhost()
+    {
+        ghostUse--;
+        ghostMode = true;
+        FindObjectOfType<ItemInteraction>().canGrab = false;
+
+        //UI.UpdateUI();
+        var objects = FindObjectsOfType<GameObject>();
+        foreach (var item in objects)
+        {
+            if (item.layer == 19)
+            {
+                item.layer = 12;
+            }
+        }
+        ghostOverlay.gameObject.SetActive(true);
+        transform.GetComponent<ItemInteraction>().ReleaseItems(2);
+    }
+
+    private void disableGhost()
+    {
+        ghostTimer = ghostStartTimer;
+        ghostMode = false;
+        FindObjectOfType<ItemInteraction>().canGrab = true;
+
+        //UI.UpdateUI();
+        var objects = FindObjectsOfType<GameObject>();
+        foreach (var item in objects)
+        {
+            if (item.layer == 12)
+            {
+                item.layer = 19;
+            }
+        }
+        ghostOverlay.gameObject.SetActive(false);
     }
 }

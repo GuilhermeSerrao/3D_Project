@@ -26,11 +26,15 @@ public class CameraMovement : MonoBehaviour
         {
             changeFloor = false;
         }
-        
+
+        if (!UIManager.paused)
+        {        
 
         rotation.y += Input.GetAxis("Mouse X");
 
         transform.rotation = Quaternion.Euler(transform.rotation.x, rotation.y, transform.rotation.z);
+
+        }
     }
 
     private void FixedUpdate()

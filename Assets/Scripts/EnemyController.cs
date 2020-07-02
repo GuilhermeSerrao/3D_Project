@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class EnemyController : MonoBehaviour
 {
@@ -25,8 +26,9 @@ public class EnemyController : MonoBehaviour
 
     private bool hasPlayer;
 
+
     [SerializeField]
-    private int playerLives;
+    private Image detectbar1, detectbar2;
 
     [SerializeField]
     private float detectTimer;
@@ -39,6 +41,7 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         startDetectTimer = detectTimer;
+        detectTimer = 0;
         UI = FindObjectOfType<UIManager>();
         player = FindObjectOfType<PlayerMovement>();
         target = targetLocations[Random.Range(0, targetLocations.Length)].position;
@@ -53,24 +56,26 @@ public class EnemyController : MonoBehaviour
 
         if (hasPlayer)
         {
-            if (detectTimer >= 0)
+            if (detectTimer < startDetectTimer)
             {
-                detectTimer -= Time.deltaTime;
+                detectTimer += Time.deltaTime;
+                print(detectTimer / 1);
+                detectbar1.fillAmount = detectTimer / 1;
+                detectbar2.fillAmount = detectTimer / 1;
             }
-            else if (detectTimer <= 0)
+            else if (detectTimer >= startDetectTimer)
             {
-                playerLives--;
-                detectTimer = startDetectTimer;
-                if (playerLives <= 0)
-                {
-                    print("Dead");
-                }
+                player.LoseHealth();
+                detectTimer = 0;
+                
             }                   
 
         }
         else
         {
-            detectTimer = startDetectTimer;
+            detectTimer = 0;
+            detectbar1.fillAmount = 0;
+            detectbar2.fillAmount = 0;
         }
 
         if (Mathf.Approximately(transform.position.x, target.x) && Mathf.Approximately(transform.position.z, target.z))
