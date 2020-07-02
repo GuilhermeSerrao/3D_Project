@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -28,6 +29,9 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField]
     private int playerLayer, ghostLayer;
+
+    [SerializeField]
+    private Image ghostOverlay;
 
     private float originalSpeed;
 
@@ -73,7 +77,15 @@ public class PlayerMovement : MonoBehaviour
                 ghostMode = true;
                 UI.ghostMode = ghostMode;
                 UI.UpdateUI();
-                gameObject.layer = ghostLayer;
+                var objects = FindObjectsOfType<GameObject>();
+                foreach (var item in objects)
+                {
+                    if (item.layer == 19)
+                    {
+                        item.layer = 12;
+                    }
+                }
+                ghostOverlay.gameObject.SetActive(true);
                 transform.GetComponent<ItemInteraction>().ReleaseItems(2);
             }
             else if(ghostMode)
@@ -81,7 +93,15 @@ public class PlayerMovement : MonoBehaviour
                 ghostMode = false;
                 UI.ghostMode = ghostMode;
                 UI.UpdateUI();
-                gameObject.layer = playerLayer;
+                var objects = FindObjectsOfType<GameObject>();
+                foreach (var item in objects)
+                {
+                    if (item.layer == 12)
+                    {
+                        item.layer = 19;
+                    }
+                }
+                ghostOverlay.gameObject.SetActive(false);
             }
         }
         

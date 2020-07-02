@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -22,15 +23,22 @@ public class EnemyController : MonoBehaviour
 
     private Vector3 target = Vector3.zero;
 
-
-
     private bool hasPlayer;
+
+    [SerializeField]
+    private int playerLives;
+
+    [SerializeField]
+    private float detectTimer;
+
+    private float startDetectTimer;
 
     //private Vector3 previousTarget;
 
     // Start is called before the first frame update
     void Start()
     {
+        startDetectTimer = detectTimer;
         UI = FindObjectOfType<UIManager>();
         player = FindObjectOfType<PlayerMovement>();
         target = targetLocations[Random.Range(0, targetLocations.Length)].position;
@@ -41,9 +49,29 @@ public class EnemyController : MonoBehaviour
     void Update()
     {
         fieldOfView.SetAimDirection(-transform.right);
-        fieldOfView.SetOrigin(transform.position); 
- 
+        fieldOfView.SetOrigin(transform.position);
 
+        if (hasPlayer)
+        {
+            if (detectTimer >= 0)
+            {
+                detectTimer -= Time.deltaTime;
+            }
+            else if (detectTimer <= 0)
+            {
+                playerLives--;
+                detectTimer = startDetectTimer;
+                if (playerLives <= 0)
+                {
+                    print("Dead");
+                }
+            }                   
+
+        }
+        else
+        {
+            detectTimer = startDetectTimer;
+        }
 
         if (Mathf.Approximately(transform.position.x, target.x) && Mathf.Approximately(transform.position.z, target.z))
         {
