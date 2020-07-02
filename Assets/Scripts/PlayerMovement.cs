@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
@@ -96,7 +97,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (lives <= 0)
         {
-            print("Dead");
+            SceneManager.LoadScene("GameOverScreen", LoadSceneMode.Single);
         }
 
         if (Input.GetKeyDown(KeyCode.LeftShift) && !UIManager.paused)

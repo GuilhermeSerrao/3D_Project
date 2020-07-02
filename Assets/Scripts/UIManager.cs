@@ -21,10 +21,12 @@ public class UIManager : MonoBehaviour
     private float roundTimer;
 
     private float startTimer;
+
+    private int totalTrash, currentTrash;
     // Start is called before the first frame update
     void Start()
     {
-
+        currentTrash = totalTrash;
         startTimer = roundTimer;
         Cursor.visible = false;      
         
@@ -61,7 +63,12 @@ public class UIManager : MonoBehaviour
         }
         else if(roundTimer <= 0)
         {
-            print("Time over");
+            SceneManager.LoadScene("GameOverScreen", LoadSceneMode.Single);
+        }
+
+        if (currentTrash <= 0)
+        {
+            SceneManager.LoadScene("WinScreen", LoadSceneMode.Single);
         }
     }
 
@@ -70,7 +77,14 @@ public class UIManager : MonoBehaviour
         livesText.text = lives.ToString();
     }
 
+    public void SetTrashBar()
+    {
+        currentTrash--;
+        trashBar.fillAmount = (float)currentTrash / (float)totalTrash;
+    }
 
-
-    
+    public void SetTotalTrash(int trash)
+    {
+        totalTrash = trash;
+    }
 }

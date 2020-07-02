@@ -220,7 +220,8 @@ public class ItemInteraction : MonoBehaviour
                         trashDropLeft = GameObject.FindGameObjectsWithTag("FoodTrash");
                         foreach (var item in trashDropLeft)
                         {
-
+                            print(item.name);
+                            item.GetComponent<TrashDrop>().StartParticles();
                         }
                     }
                     else if ((int)pickedItemLeft.category == 2)
@@ -228,7 +229,8 @@ public class ItemInteraction : MonoBehaviour
                         trashDropLeft = GameObject.FindGameObjectsWithTag("ClothesTrash");
                         foreach (var item in trashDropLeft)
                         {
-                            print("Drop Clothes");
+                            print(item.name);
+                            item.GetComponent<TrashDrop>().StartParticles();
                         }
                     }
                     else if ((int)pickedItemLeft.category == 3)
@@ -236,7 +238,8 @@ public class ItemInteraction : MonoBehaviour
                         trashDropLeft = GameObject.FindGameObjectsWithTag("BooksTrash");
                         foreach (var item in trashDropLeft)
                         {
-                            print("Drop books");
+                            print(item.name);
+                            item.GetComponent<TrashDrop>().StartParticles();
                         }
                     }
                     else if ((int)pickedItemLeft.category == 4)
@@ -244,7 +247,8 @@ public class ItemInteraction : MonoBehaviour
                         trashDropLeft = GameObject.FindGameObjectsWithTag("ElectronicTrash");
                         foreach (var item in trashDropLeft)
                         {
-                            print("Drop electronics");
+                            print(item.name);
+                            item.GetComponent<TrashDrop>().StartParticles();
                         }
                     }
                 }
@@ -260,7 +264,7 @@ public class ItemInteraction : MonoBehaviour
                         trashDropRight = GameObject.FindGameObjectsWithTag("FoodTrash");
                         foreach (var item in trashDropRight)
                         {
-                            print("Drop food");
+                            item.GetComponent<TrashDrop>().StartParticles();
                         }
                     }
                     else if ((int)pickedItemRight.category == 2)
@@ -268,7 +272,7 @@ public class ItemInteraction : MonoBehaviour
                         trashDropRight = GameObject.FindGameObjectsWithTag("ClothesTrash");
                         foreach (var item in trashDropRight)
                         {
-                            print("Drop Clothes");
+                            item.GetComponent<TrashDrop>().StartParticles();
                         }
                     }
                     else if ((int)pickedItemRight.category == 3)
@@ -276,7 +280,7 @@ public class ItemInteraction : MonoBehaviour
                         trashDropRight = GameObject.FindGameObjectsWithTag("BooksTrash");
                         foreach (var item in trashDropRight)
                         {
-                            print("Drop books");
+                            item.GetComponent<TrashDrop>().StartParticles();
                         }
                     }
                     else if ((int)pickedItemRight.category == 4)
@@ -284,7 +288,7 @@ public class ItemInteraction : MonoBehaviour
                         trashDropRight = GameObject.FindGameObjectsWithTag("ElectronicTrash");
                         foreach (var item in trashDropRight)
                         {
-                            print("Drop electronics");
+                            item.GetComponent<TrashDrop>().StartParticles();
                         }
                     }
                 }
@@ -335,6 +339,10 @@ public class ItemInteraction : MonoBehaviour
                 {
                     if ((int)item.GetComponent<TrashDrop>().category == (int)pickedItemRight.category)
                     {
+                        foreach (var drop in trashDropRight)
+                        {
+                            drop.GetComponent<TrashDrop>().StopParticles();
+                        }
                         rightTrashIcon.gameObject.SetActive(false);
                         rightTrashIcon.sprite = null;
                         rightHandFree = true;
@@ -342,6 +350,7 @@ public class ItemInteraction : MonoBehaviour
                         rightObject = null;
                         Destroy(tempTrash.gameObject);
                         var UI = FindObjectOfType<UIManager>();
+                        UI.SetTrashBar();
                         break;
                     }
                 }              
@@ -383,6 +392,10 @@ public class ItemInteraction : MonoBehaviour
                 {
                     if ((int)item.GetComponent<TrashDrop>().category == (int)pickedItemLeft.category)
                     {
+                        foreach (var drop in trashDropLeft)
+                        {
+                            drop.GetComponent<TrashDrop>().StopParticles();
+                        }
                         leftTrashIcon.gameObject.SetActive(false);
                         leftTrashIcon.sprite = null;
                         leftHandFree = true;
@@ -390,6 +403,8 @@ public class ItemInteraction : MonoBehaviour
                         leftObject = null;
                         Destroy(tempTrash.gameObject);
                         var UI = FindObjectOfType<UIManager>();
+                        UI.SetTrashBar();
+                        print("Teste");
                         break;
                     }
                 }

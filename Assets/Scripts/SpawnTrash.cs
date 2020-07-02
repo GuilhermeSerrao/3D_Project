@@ -20,8 +20,15 @@ public class SpawnTrash : MonoBehaviour
 
     private Transform spawn;
     // Start is called before the first frame update
+
+    private void Awake()
+    {
+        FindObjectOfType<UIManager>().SetTotalTrash(totalTrashToSpawn);
+    }
     void Start()
     {
+        
+
         for (int i = 0; i < totalTrashToSpawn; i++)
         {
             itemToSpawn = trash[Random.Range(0, trash.Length)];

@@ -23,7 +23,7 @@ public class TrashDrop : MonoBehaviour
         {
             particles = transform.GetChild(0).gameObject;
             particles.SetActive(false);
-            particles.transform.position = transform.position;
+            
         }
         
     }
