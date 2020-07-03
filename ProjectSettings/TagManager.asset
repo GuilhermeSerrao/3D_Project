@@ -20,6 +20,7 @@ TagManager:
   - ElectronicTrash
   - BooksTrash
   - ClothesTrash
+  - DustPuddleSpawn
   layers:
   - Default
   - TransparentFX

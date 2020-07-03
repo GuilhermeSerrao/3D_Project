@@ -10,7 +10,9 @@ public class PickUpItem : MonoBehaviour
         Food = 1,
         Clothes = 2,
         Books = 3,
-        Electronics = 4
+        Electronics = 4,
+        Dust = 5,
+        Puddle = 6
     }
 
     public categories category;

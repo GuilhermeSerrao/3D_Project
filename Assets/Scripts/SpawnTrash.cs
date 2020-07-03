@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class SpawnTrash : MonoBehaviour
@@ -9,10 +10,13 @@ public class SpawnTrash : MonoBehaviour
     private PickUpItem[] trash;
 
     [SerializeField]
+    private GameObject[] puddleDust;
+
+    [SerializeField]
     private List<Transform> trashSpawns;
         
     [SerializeField]
-    private int totalTrashToSpawn;
+    private int totalTrashToSpawn, dustPuddleToSpawn;
 
     private PickUpItem itemToSpawn;
 
@@ -23,11 +27,23 @@ public class SpawnTrash : MonoBehaviour
 
     private void Awake()
     {
-        FindObjectOfType<UIManager>().SetTotalTrash(totalTrashToSpawn);
+        FindObjectOfType<UIManager>().SetTotalTrash(totalTrashToSpawn, dustPuddleToSpawn);
     }
     void Start()
     {
-        
+
+        var dustPuddlesArray = GameObject.FindGameObjectsWithTag("DustPuddleSpawn");
+        var dustPuddlesList = dustPuddlesArray.ToList();
+
+        for (int i = 0; i < dustPuddleToSpawn ; i++)
+        {
+            var spawn = dustPuddlesList[Random.Range(0, dustPuddlesList.Count)];
+
+            Instantiate(puddleDust[Random.Range(0, puddleDust.Length)], spawn.transform.position, Quaternion.Euler(0, Random.Range(0, 360), 0));                
+            
+            dustPuddlesList.Remove(spawn);
+        }
+
 
         for (int i = 0; i < totalTrashToSpawn; i++)
         {

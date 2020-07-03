@@ -7,13 +7,15 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
     [SerializeField]
-    private GameObject gamePanel, pausePanel;
+    private GameObject gamePanel, pausePanel, winScreen, gameOverScreen;
 
     [SerializeField]
     private Text trashText, livesText;
 
     [SerializeField]
     private Image clockBar, trashBar;
+
+    private bool canInput = true;
 
     public static bool paused;
 
@@ -35,24 +37,9 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && canInput)
         {
-            if (!paused)
-            {                
-                Time.timeScale = 0;
-                paused = true;
-                gamePanel.SetActive(false);
-                pausePanel.SetActive(true);
-                Cursor.visible = true;
-            }
-            else
-            {
-                Time.timeScale = 1;
-                paused = false;
-                gamePanel.SetActive(true);
-                pausePanel.SetActive(false);
-                Cursor.visible = false;
-            }
+            PauseScreen();           
         }
 
         if (roundTimer > 0 && !paused)
@@ -83,8 +70,43 @@ public class UIManager : MonoBehaviour
         trashBar.fillAmount = (float)currentTrash / (float)totalTrash;
     }
 
-    public void SetTotalTrash(int trash)
+    public void SetTotalTrash(int trash, int puddles)
     {
-        totalTrash = trash;
+        totalTrash = trash+puddles;
+    }
+
+    public void WinScreen()
+    {
+        canInput = false;
+        paused = true;
+        gamePanel.SetActive(false);
+        winScreen.SetActive(true);
+    }
+    public void LoseScreen()
+    {
+        canInput = false;
+        paused = true;
+        gamePanel.SetActive(false);
+        gameOverScreen.SetActive(true);
+    }
+
+    private void PauseScreen()
+    {
+        if (!paused)
+        {
+            Time.timeScale = 0;
+            paused = true;
+            gamePanel.SetActive(false);
+            pausePanel.SetActive(true);
+            Cursor.visible = true;
+        }
+        else
+        {
+            Time.timeScale = 1;
+            paused = false;
+            gamePanel.SetActive(true);
+            pausePanel.SetActive(false);
+            Cursor.visible = false;
+        }
     }
 }

@@ -43,7 +43,7 @@ public class ItemInteraction : MonoBehaviour
 
     private CameraMovement cam;
 
-    public bool canGrab = true;
+    public bool canGrab = true, hasBroom, hasMop;
 
     private GameObject[] trashDropLeft, trashDropRight;
 
@@ -113,7 +113,6 @@ public class ItemInteraction : MonoBehaviour
                                 closestObject = item.transform;
                             }
                         }
-
                     }
                 }
             
@@ -142,7 +141,9 @@ public class ItemInteraction : MonoBehaviour
                     rightHandFree = false;
                     rightClick = true;
                     rightObject = closestObject;
+                    
                     pickedItemRight = rightObject.GetComponent<PickUpItem>();
+                                  
 
                     if (rightObject.transform.parent != null)
                     {
@@ -251,14 +252,24 @@ public class ItemInteraction : MonoBehaviour
                             item.GetComponent<TrashDrop>().StartParticles();
                         }
                     }
+                    else if ((int)pickedItemLeft.category == 5)
+                    {
+                        hasBroom = true;
+                    }
+                    else if ((int)pickedItemLeft.category == 6)
+                    {
+                        hasMop = true;
+                    }
                 }
                 else
                 {
                     trashDropLeft = null;
+                                 
                 }
 
                 if (pickedItemRight != null)
                 {
+                    print((int)pickedItemRight.category);
                     if ((int)pickedItemRight.category == 1)
                     {
                         trashDropRight = GameObject.FindGameObjectsWithTag("FoodTrash");
@@ -291,11 +302,24 @@ public class ItemInteraction : MonoBehaviour
                             item.GetComponent<TrashDrop>().StartParticles();
                         }
                     }
+                    else if ((int)pickedItemRight.category == 5)
+                    {
+                        hasBroom = true;
+                    }
+                    else if ((int)pickedItemRight.category == 6)
+                    {
+                        hasMop = true;
+                    }
+
+                    
                 }
                 else
-                {
+                {                    
                     trashDropRight = null;
+                
                 }
+
+                
 
                 if (Input.GetMouseButtonUp(0))
                 {
@@ -376,10 +400,21 @@ public class ItemInteraction : MonoBehaviour
                     rightObject.gameObject.GetComponent<Rigidbody>().isKinematic = false;
                 }
 
+                if ((int)pickedItemRight.category == 5)
+                {
+                    hasBroom = false;
+                }
+                else if ((int)pickedItemRight.category == 6)
+                {
+                    hasMop = false;
+                }
                 rightHandFree = true;
                 rightObject = null;
             }
+            
             pickedItemRight = null;
+
+            
             
         }
 
@@ -429,7 +464,14 @@ public class ItemInteraction : MonoBehaviour
                     leftObject.transform.parent = null;
                     leftObject.gameObject.GetComponent<Rigidbody>().isKinematic = false;
                 }
-
+                if ((int)pickedItemLeft.category == 5)
+                {
+                    hasBroom = false;
+                }
+                else if ((int)pickedItemLeft.category == 6)
+                {
+                    hasMop = false;
+                }
                 leftHandFree = true;
                 leftObject = null;
             }

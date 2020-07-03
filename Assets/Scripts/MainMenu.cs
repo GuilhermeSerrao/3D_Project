@@ -5,13 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
+    [SerializeField]
+    private GameObject mainMenu, optionsScreen;
     void Update()
     {
         if (Input.anyKeyDown && SceneManager.GetActiveScene().name != "MainMenu")
@@ -29,4 +24,20 @@ public class MainMenu : MonoBehaviour
     {
         Application.Quit();
     }
+
+    public void OptionsScreen(bool options)
+    {
+        if (options)
+        {
+            mainMenu.SetActive(false);
+            optionsScreen.SetActive(true);
+        }
+        else
+        {
+            mainMenu.SetActive(true);
+            optionsScreen.SetActive(false);
+        }
+    }
+
+
 }
