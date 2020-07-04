@@ -13,20 +13,8 @@ public class CameraMovement : MonoBehaviour
 
     private Quaternion rotation;
 
-    private bool changeFloor = false;
-
-    private float targetHeight;
     private void Update()
     {
-        if (changeFloor)
-        {
-            transform.position = Vector3.Lerp(transform.position, new Vector3(target.position.x, targetHeight, target.position.z), 5 * Time.deltaTime);
-        }
-        else if (transform.position.y == targetHeight)
-        {
-            changeFloor = false;
-        }
-
         if (!UIManager.paused)
         {        
 
@@ -42,12 +30,7 @@ public class CameraMovement : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, new Vector3(target.position.x, transform.position.y, target.position.z), speed*Time.deltaTime);
     }
 
-    public void ChangeFloorPivot(float height)
-    {
-        changeFloor = true;
-        targetHeight = height;
 
-    }
 
     public void ChangeCameraTarget(Transform newTarget)
     {
