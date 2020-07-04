@@ -18,24 +18,20 @@ public class ToClean : MonoBehaviour
         playerItem = FindObjectOfType<ItemInteraction>();
     }
 
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.GetComponent<PlayerMovement>())
         {
             
-            if ((int)category==5)
+            if ((int)category==5 && playerItem.hasBroom)
             {
-                if (playerItem.hasBroom)
-                {
-                    Clean();
-                }
+                Clean();
+                
             }
-            else if((int)category==6)
+            else if((int)category==6 && playerItem.hasMop)
             {
-                if (playerItem.hasMop)
-                {
-                    Clean();
-                }
+                Clean();
+                
             }
         }
     }

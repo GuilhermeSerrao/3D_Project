@@ -14,7 +14,7 @@ public class PlayerMovement : MonoBehaviour
     private float moveSpeed;  
 
     [SerializeField]
-    private float rotationSpeed, ghostTimer, ghostCooldownTimer;
+    private float rotationSpeed, ghostDuration, ghostCooldownTimer;
 
     [SerializeField]
     private Transform cam;
@@ -34,21 +34,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private Image ghostOverlay;
 
-    private float originalSpeed, ghostStartTimer, ghostCooldownStart;
+    private float ghostStartTimer, ghostCooldownStart;
 
-    private float airSpeed;
-
-    private float distanceGround;
-
-    private bool isGrounded = false;
-
-    private Rigidbody rb;
-
-    private RaycastHit groundHit;
+    private Rigidbody rb;    
 
     private bool hidden;
 
-    private bool ghostMode, canTurnGhost, ghostInCooldown = false;
+    private bool ghostMode;
 
     private UIManager Ui;
     
@@ -57,51 +49,43 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
-        //coll = GetComponent<Collider>();
         rb = GetComponent<Rigidbody>();
-        distanceGround = GetComponent<Collider>().bounds.extents.y;
     }
-
     private void Start()
     {      
 
         ghostCooldownStart = ghostCooldownTimer;
-        ghostStartTimer = ghostTimer;
-        originalSpeed = moveSpeed;
-        airSpeed = moveSpeed / 2;
+        ghostCooldownTimer = 0;
+        ghostStartTimer = ghostDuration;
         Ui = FindObjectOfType<UIManager>();
         Ui.SetLivesUI(lives);
+        Ui.SetGhostUses(ghostUse);
     }
 
     private void Update()
     {
 
-        if (ghostCooldownTimer > 0 && ghostInCooldown)
+
+        if (ghostUse < 2 )
         {
-            ghostCooldownTimer -= Time.deltaTime;
-            canTurnGhost = false;
-        }
-        else if(ghostCooldownTimer <= 0 && ghostInCooldown)
-        {
-            ghostInCooldown = false;
-            canTurnGhost = true;
-            ghostCooldownTimer = ghostCooldownStart;
+            if (ghostCooldownTimer < ghostCooldownStart)
+            {
+                ghostCooldownTimer += Time.deltaTime;
+                Ui.GhostCooldown(ghostCooldownStart, ghostCooldownTimer);
+            }
+            else if (ghostCooldownTimer >= ghostCooldownStart)
+            {
+                ghostUse++;
+                Ui.SetGhostUses(ghostUse);
+                ghostCooldownTimer = 0;
+            }
             
         }
 
-        if (ghostUse > 0 && !ghostInCooldown)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && !UIManager.paused && ghostUse > 0)
         {
-            canTurnGhost = true;
-        }
-        else
-        {
-            canTurnGhost = false;
-        }
-
-        if (Input.GetKeyDown(KeyCode.LeftShift) && !UIManager.paused)
-        {
-            var UI = FindObjectOfType<UIManager>();
-            if (!ghostMode && canTurnGhost && !hidden)
+            
+            if (!ghostMode && !hidden)
             {
                 enableGhost();
             }
@@ -113,9 +97,9 @@ public class PlayerMovement : MonoBehaviour
 
         if (!UIManager.paused && ghostMode)
         {
-            if (ghostTimer > 0)
+            if (ghostDuration > 0)
             {
-                ghostTimer -= Time.deltaTime;
+                ghostDuration -= Time.deltaTime;
             }
             else
             {
@@ -132,7 +116,6 @@ public class PlayerMovement : MonoBehaviour
             
             float verticalAxis = Input.GetAxisRaw("Vertical");
             float horizontalAxis = Input.GetAxisRaw("Horizontal");
-            float jumpAxis = Input.GetAxisRaw("Jump");
 
             Vector3 camf = cam.forward;
             Vector3 camR = cam.right;
@@ -184,13 +167,13 @@ public class PlayerMovement : MonoBehaviour
 
     private void enableGhost()
     {
-        GetComponent<AudioSource>().PlayOneShot(ghostSFX);
+        GetComponent<AudioSource>().PlayOneShot(ghostSFX);        
 
         ghostUse--;
+        Ui.SetGhostUses(ghostUse);
         ghostMode = true;
         FindObjectOfType<ItemInteraction>().canGrab = false;
 
-        //UI.UpdateUI();
         var objects = FindObjectsOfType<GameObject>();
         foreach (var item in objects)
         {
@@ -204,16 +187,14 @@ public class PlayerMovement : MonoBehaviour
         ghostOverlay.gameObject.SetActive(true);
         transform.GetComponent<ItemInteraction>().ReleaseItems(2);
 
-        ghostInCooldown = false;
     }
 
     private void disableGhost()
     {
-        ghostTimer = ghostStartTimer;
+        ghostDuration = ghostStartTimer;
         ghostMode = false;
         FindObjectOfType<ItemInteraction>().canGrab = true;
 
-        //UI.UpdateUI();
         var objects = FindObjectsOfType<GameObject>();
         foreach (var item in objects)
         {
@@ -225,6 +206,5 @@ public class PlayerMovement : MonoBehaviour
 
         ghostOverlay.gameObject.SetActive(false);
 
-        ghostInCooldown = true;
     }
 }

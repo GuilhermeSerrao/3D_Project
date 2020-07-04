@@ -10,6 +10,9 @@ public class FieldOfView : MonoBehaviour
     // Start is called before the first frame update
 
     [SerializeField]
+    private AudioClip detectSFX;
+
+    [SerializeField]
     private LayerMask layerMaskWalls, layerMaskPlayer;
 
     [SerializeField]
@@ -37,6 +40,8 @@ public class FieldOfView : MonoBehaviour
     private float startAngle;
 
     private bool[] hasPlayerArray;
+
+    private bool playSound = true;
 
     void Start()
     {
@@ -130,6 +135,12 @@ public class FieldOfView : MonoBehaviour
 
         if (hasPlayerList.Contains(true))
         {
+            if (playSound)
+            {
+                playSound = false;
+                GetComponent<AudioSource>().PlayOneShot(detectSFX);
+                
+            }
             GetComponent<MeshRenderer>().material = alertMaterial;
             FindObjectOfType<EnemyController>().SetPlayer(true);
         }
@@ -137,6 +148,7 @@ public class FieldOfView : MonoBehaviour
         {
             GetComponent<MeshRenderer>().material = detectMaterial; ;
             FindObjectOfType<EnemyController>().SetPlayer(false);
+            playSound = true;
         }
 
         for (int i = 0; i < hasPlayerList.Count; i++)

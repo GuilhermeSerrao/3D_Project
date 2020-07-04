@@ -10,10 +10,19 @@ public class UIManager : MonoBehaviour
     private GameObject gamePanel, pausePanel, winScreen, gameOverScreen, optionsScreen;
 
     [SerializeField]
-    private Text trashText, livesText;
+    private Text trashText, livesText, ghostUses;
 
     [SerializeField]
-    private Image clockBar, trashBar;
+    private Slider sfxSlider, musicSlider;
+
+    [SerializeField]
+    private AudioSource[] sfxSources;
+
+    [SerializeField]
+    private AudioSource musicSource;
+
+    [SerializeField]
+    private Image clockBar, trashBar, ghostCooldown;
 
     private bool canInput = true;
 
@@ -76,6 +85,11 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void SetGhostUses(int uses)
+    {
+        ghostUses.text = uses.ToString();
+    }
+
     public void SetTrashBar()
     {
         currentTrash--;
@@ -106,11 +120,13 @@ public class UIManager : MonoBehaviour
 
     public void RestartGame()
     {
+        paused = false;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
     }
 
     public void QuitGame()
     {
+        paused = false;
         SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
     }
 
@@ -147,5 +163,23 @@ public class UIManager : MonoBehaviour
             pausePanel.SetActive(false);
             Cursor.visible = false;
         }
+    }
+
+    public void ChangeSFXVolume()
+    {
+        foreach (var item in sfxSources)
+        {
+            item.volume = sfxSlider.value;
+        }
+    }
+
+    public void ChangeMusicVolume()
+    {
+        musicSource.volume = musicSlider.value;
+    }
+
+    public void GhostCooldown(float startTime, float currentTime)
+    {
+        ghostCooldown.fillAmount = currentTime / startTime;
     }
 }
