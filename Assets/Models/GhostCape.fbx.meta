@@ -3,7 +3,12 @@ guid: a241dd6efcbecbe4c96c157eee2de9bc
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: CapeUVSTextures
+    second: {fileID: 2800000, guid: cf7387c3209995e40903f793e264f6fe, type: 3}
   materials:
     materialImportMode: 1
     materialName: 0

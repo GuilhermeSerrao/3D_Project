@@ -9,6 +9,9 @@ public class ItemInteraction : MonoBehaviour
 {
 
     [SerializeField]
+    private AudioClip grabItemSFX, putInTrashSFX;
+
+    [SerializeField]
     private float grabRange;
 
     [SerializeField]
@@ -138,6 +141,7 @@ public class ItemInteraction : MonoBehaviour
 
                 if (closestObject && Input.GetMouseButtonDown(1) && rightHandFree)
                 {
+                    GetComponent<AudioSource>().PlayOneShot(grabItemSFX);
 
                     rightHandFree = false;
                     rightClick = true;
@@ -186,6 +190,9 @@ public class ItemInteraction : MonoBehaviour
 
                 if (closestObject && Input.GetMouseButtonDown(0) && leftHandFree)
                 {
+                    GetComponent<AudioSource>().PlayOneShot(grabItemSFX);
+
+
                     leftHandFree = false;
                     leftClick = true;
                     leftObject = closestObject;
@@ -364,6 +371,8 @@ public class ItemInteraction : MonoBehaviour
                 {
                     if ((int)item.GetComponent<TrashDrop>().category == (int)pickedItemRight.category)
                     {
+                        GetComponent<AudioSource>().PlayOneShot(putInTrashSFX);
+
                         foreach (var drop in trashDropRight)
                         {
                             drop.GetComponent<TrashDrop>().StopParticles();
@@ -428,6 +437,8 @@ public class ItemInteraction : MonoBehaviour
                 {
                     if ((int)item.GetComponent<TrashDrop>().category == (int)pickedItemLeft.category)
                     {
+                        GetComponent<AudioSource>().PlayOneShot(putInTrashSFX);
+
                         foreach (var drop in trashDropLeft)
                         {
                             drop.GetComponent<TrashDrop>().StopParticles();

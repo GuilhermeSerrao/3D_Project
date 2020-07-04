@@ -8,6 +8,9 @@ public class PlayerMovement : MonoBehaviour
 {
 
     [SerializeField]
+    private AudioClip ghostSFX;
+
+    [SerializeField]
     private float moveSpeed;  
 
     [SerializeField]
@@ -157,12 +160,15 @@ public class PlayerMovement : MonoBehaviour
         hidden = hide;
         if (hide)
         {
+            GetComponent<Rigidbody>().velocity = Vector3.zero;
             transform.GetChild(0).GetChild(0).gameObject.SetActive(false);
             gameObject.layer = hiddenLayer;
             
         }
         else
         {
+            GetComponent<Rigidbody>().velocity = Vector3.zero;
+
             gameObject.layer = playerLayer;
             transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
             
@@ -178,7 +184,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void enableGhost()
     {
-        print("ghost mode");
+        GetComponent<AudioSource>().PlayOneShot(ghostSFX);
+
         ghostUse--;
         ghostMode = true;
         FindObjectOfType<ItemInteraction>().canGrab = false;
