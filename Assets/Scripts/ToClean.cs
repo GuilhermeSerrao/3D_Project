@@ -38,6 +38,7 @@ public class ToClean : MonoBehaviour
 
     private void Clean()
     {
+        playerItem.PlayTrashSound();
         FindObjectOfType<UIManager>().SetTrashBar();
         Destroy(gameObject);
     }

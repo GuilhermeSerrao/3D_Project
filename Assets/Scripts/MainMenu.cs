@@ -7,13 +7,13 @@ public class MainMenu : MonoBehaviour
 {
     [SerializeField]
     private GameObject mainMenu, optionsScreen;
-    void Update()
+
+    private void Start()
     {
-        if (Input.anyKeyDown && SceneManager.GetActiveScene().name != "MainMenu")
-        {
-            Application.Quit();
-        }
+        Cursor.lockState = CursorLockMode.Confined;
     }
+
+
 
     public void PlayGame()
     {

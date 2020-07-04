@@ -39,8 +39,9 @@ public class UIManager : MonoBehaviour
     {
         currentTrash = totalTrash;
         startTimer = roundTimer;
-        Cursor.visible = false;      
-        
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+
     }
 
     // Update is called once per frame
@@ -154,6 +155,7 @@ public class UIManager : MonoBehaviour
             gamePanel.SetActive(false);
             pausePanel.SetActive(true);
             Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.Confined;
         }
         else
         {
@@ -162,6 +164,7 @@ public class UIManager : MonoBehaviour
             gamePanel.SetActive(true);
             pausePanel.SetActive(false);
             Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
         }
     }
 

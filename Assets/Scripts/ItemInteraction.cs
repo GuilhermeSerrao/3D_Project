@@ -371,7 +371,7 @@ public class ItemInteraction : MonoBehaviour
                 {
                     if ((int)item.GetComponent<TrashDrop>().category == (int)pickedItemRight.category)
                     {
-                        GetComponent<AudioSource>().PlayOneShot(putInTrashSFX);
+                        PlayTrashSound();
 
                         foreach (var drop in trashDropRight)
                         {
@@ -437,7 +437,7 @@ public class ItemInteraction : MonoBehaviour
                 {
                     if ((int)item.GetComponent<TrashDrop>().category == (int)pickedItemLeft.category)
                     {
-                        GetComponent<AudioSource>().PlayOneShot(putInTrashSFX);
+                        PlayTrashSound();
 
                         foreach (var drop in trashDropLeft)
                         {
@@ -494,5 +494,10 @@ public class ItemInteraction : MonoBehaviour
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, grabRange);
+    }
+
+    public void PlayTrashSound()
+    {
+        GetComponent<AudioSource>().PlayOneShot(putInTrashSFX);
     }
 }
