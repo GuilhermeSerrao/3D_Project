@@ -154,6 +154,7 @@ public class UIManager : MonoBehaviour
             paused = true;
             gamePanel.SetActive(false);
             pausePanel.SetActive(true);
+            
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.Confined;
         }
@@ -163,6 +164,7 @@ public class UIManager : MonoBehaviour
             paused = false;
             gamePanel.SetActive(true);
             pausePanel.SetActive(false);
+            optionsScreen.SetActive(false);
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
         }
