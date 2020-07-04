@@ -26,7 +26,7 @@ public class PlayerMovement : MonoBehaviour
     private PhysicMaterial airMaterial;
 
     [SerializeField]
-    private int playerLayer, ghostLayer, lives, ghostUse;
+    private int playerLayer, ghostLayer, lives, ghostUse, hiddenLayer;
 
     [SerializeField]
     private Image ghostOverlay;
@@ -95,15 +95,10 @@ public class PlayerMovement : MonoBehaviour
             canTurnGhost = false;
         }
 
-        if (lives <= 0)
-        {
-            SceneManager.LoadScene("GameOverScreen", LoadSceneMode.Single);
-        }
-
         if (Input.GetKeyDown(KeyCode.LeftShift) && !UIManager.paused)
         {
             var UI = FindObjectOfType<UIManager>();
-            if (!ghostMode && canTurnGhost)
+            if (!ghostMode && canTurnGhost && !hidden)
             {
                 enableGhost();
             }
@@ -162,18 +157,16 @@ public class PlayerMovement : MonoBehaviour
         hidden = hide;
         if (hide)
         {
-            FindObjectOfType<EnemyController>().patrol = false;
-            transform.GetChild(0).gameObject.SetActive(false);
+            transform.GetChild(0).GetChild(0).gameObject.SetActive(false);
+            gameObject.layer = hiddenLayer;
             
-            //transform.localScale = Vector3.zero;
         }
         else
         {
-            FindObjectOfType<EnemyController>().patrol = true;
-            transform.GetChild(0).gameObject.SetActive(true);
+            gameObject.layer = playerLayer;
+            transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
             
 
-            //transform.localScale = Vector3.one;
         }
     }
 

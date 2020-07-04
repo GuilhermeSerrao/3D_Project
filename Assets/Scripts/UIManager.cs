@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
     [SerializeField]
-    private GameObject gamePanel, pausePanel, winScreen, gameOverScreen;
+    private GameObject gamePanel, pausePanel, winScreen, gameOverScreen, optionsScreen;
 
     [SerializeField]
     private Text trashText, livesText;
@@ -37,6 +37,14 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (paused)
+        {
+            Time.timeScale = 0;
+        }
+        else
+        {
+            Time.timeScale = 1;
+        }
         if (Input.GetKeyDown(KeyCode.Escape) && canInput)
         {
             PauseScreen();           
@@ -50,18 +58,22 @@ public class UIManager : MonoBehaviour
         }
         else if(roundTimer <= 0)
         {
-            SceneManager.LoadScene("GameOverScreen", LoadSceneMode.Single);
+            LoseScreen();
         }
 
         if (currentTrash <= 0)
         {
-            SceneManager.LoadScene("WinScreen", LoadSceneMode.Single);
+            WinScreen();
         }
     }
 
     public void SetLivesUI(int lives)
     {
         livesText.text = lives.ToString();
+        if (lives <= 0)
+        {
+            LoseScreen();
+        }
     }
 
     public void SetTrashBar()
@@ -81,6 +93,7 @@ public class UIManager : MonoBehaviour
         paused = true;
         gamePanel.SetActive(false);
         winScreen.SetActive(true);
+        Cursor.visible = true;
     }
     public void LoseScreen()
     {
@@ -88,9 +101,35 @@ public class UIManager : MonoBehaviour
         paused = true;
         gamePanel.SetActive(false);
         gameOverScreen.SetActive(true);
+        Cursor.visible = true;
     }
 
-    private void PauseScreen()
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
+    }
+
+    public void QuitGame()
+    {
+        SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
+    }
+
+    public void Options(bool option)
+    {
+        if (option)
+        {
+            optionsScreen.SetActive(true);
+            pausePanel.SetActive(false);
+        }
+        else
+        {
+            optionsScreen.SetActive(false);
+            pausePanel.SetActive(true);
+        }
+        
+    }
+
+    public void PauseScreen()
     {
         if (!paused)
         {

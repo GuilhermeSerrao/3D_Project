@@ -71,6 +71,7 @@ public class FieldOfView : MonoBehaviour
             RaycastHit hitPlayer;
 
             var raycastHit = Physics.Raycast(origin, GetVectorFromAngle(angle), out hit, viewDistance, layerMaskWalls);
+            
             var raycastHitPlayer = Physics.Raycast(origin, GetVectorFromAngle(angle), out hitPlayer, viewDistance, layerMaskPlayer);
 
             if (hit.collider == null)
@@ -90,23 +91,25 @@ public class FieldOfView : MonoBehaviour
 
             if (i > 0)
             {
-
-                if (hitPlayer.collider != null)
-                {
-                    if (hitPlayer.collider.GetComponent<PlayerMovement>())
+                
+                    if (hitPlayer.collider != null)
                     {
-                        hasPlayerArray[i - 1] = true;
+                        if (hitPlayer.collider.GetComponent<PlayerMovement>())
+                        {
+                            hasPlayerArray[i - 1] = true;
+                        }
+                        else
+                        {
+                            hasPlayerArray[i - 1] = false;
+                        }
+
                     }
                     else
                     {
                         hasPlayerArray[i - 1] = false;
                     }
-
-                }
-                else
-                {
-                    hasPlayerArray[i - 1] = false;
-                }
+                
+               
 
                 triangles[triangleIndex + 0] = 0;
                 triangles[triangleIndex + 1] = vertexIndex - 1;

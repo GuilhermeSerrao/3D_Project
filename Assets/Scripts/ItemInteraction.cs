@@ -124,10 +124,11 @@ public class ItemInteraction : MonoBehaviour
                         if (item.CompareTag("HidingSpot") && item.transform.GetChild(0).gameObject.activeInHierarchy)
                         {
                             item.transform.GetChild(0).gameObject.SetActive(false);
-                            player.transform.parent = item.transform;
+                            //player.transform.parent = item.transform;
                             hidden = true;
                             player.Hide(hidden);
-                            cam.ChangeCameraTarget(item.transform);
+                            
+                            cam.ChangeCameraTarget(item.transform.parent.transform);
                             ReleaseItems(2);
                         }
                     }
@@ -335,10 +336,10 @@ public class ItemInteraction : MonoBehaviour
             }
             else if(hidden)
             {
-                player.transform.position = player.transform.parent.transform.position;
+                //player.transform.position = player.transform.parent.transform.parent.position;
                 if (Input.GetKeyDown(KeyCode.F))
                 {
-                    player.transform.parent = null;
+                    //player.transform.parent = null;
                     hidden = false;
                     player.Hide(hidden);
                     cam.ChangeCameraTarget(player.transform);
@@ -439,7 +440,6 @@ public class ItemInteraction : MonoBehaviour
                         Destroy(tempTrash.gameObject);
                         var UI = FindObjectOfType<UIManager>();
                         UI.SetTrashBar();
-                        print("Teste");
                         break;
                     }
                 }

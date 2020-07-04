@@ -21,6 +21,7 @@ TagManager:
   - BooksTrash
   - ClothesTrash
   - DustPuddleSpawn
+  - LampSpawn
   layers:
   - Default
   - TransparentFX
@@ -35,7 +36,7 @@ TagManager:
   - Walls
   - Props
   - OnlyGround
-  - FloorTrigger
+  - PlayerHidden
   - CleanWithMop
   - CleanWithBroom
   - InteractableObject
@@ -45,7 +46,7 @@ TagManager:
   - FieldOfView
   - Doors
   - Doorsonly
-  - 
+  - PostProcessing
   - 
   - 
   - 
